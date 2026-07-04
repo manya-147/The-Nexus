@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Workforce — THE NEXUS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700&display=swap');</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gCore" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#14B8A6"/>
+          <stop offset="100%" stop-color="#0F766E"/>
+        </radialGradient>
+        <linearGradient id="gOrbit1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#14B8A6"/>
+          <stop offset="100%" stop-color="#0F766E"/>
+        </linearGradient>
+        <linearGradient id="gOrbit2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#0F766E"/>
+          <stop offset="100%" stop-color="#22C55E"/>
+        </linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="1" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+      </defs>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(-35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit2)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.6" transform="rotate(90 18 18)"/>
+      <circle cx="18" cy="2.1" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="18" cy="33.9" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="2.1" cy="18" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="33.9" cy="18" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="5.5" cy="7" r="1.5" fill="#14B8A6" opacity="0.8"/>
+      <circle cx="30.5" cy="29" r="1.5" fill="#22C55E" opacity="0.8"/>
+      <circle cx="18" cy="18" r="4" fill="url(#gCore)" filter="url(#glow)"/>
+      <circle cx="18" cy="18" r="2" fill="white" opacity="0.9"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">THE NEXUS</span>
+      <span class="logo-sub">a GPU-Nexus product</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <h4>Overview</h4>
+    <a href="dashboard.html" class="nav-dashboard"><span class="nav-icon">⬛</span> Dashboard</a>
+  </div>
+  <div class="nav-section">
+    <h4>AI Workforce</h4>
+    <a href="agents.html" class="nav-agents active"><span class="nav-icon">🤖</span> AI Workforce</a>
+    <a href="createagents.html" class="nav-createagents"><span class="nav-icon">✦</span> Create Workforce</a>
+  </div>
+  <div class="nav-section">
+    <h4>Intelligence</h4>
+    <a href="multiagent.html" class="nav-multiagent"><span class="nav-icon">🧬</span> Multi-Agent Engine</a>
+  </div>
+    <div class="nav-section">
+    <h4>Automation</h4>
+    <a href="workflow.html" class="nav-workflow"><span class="nav-icon">⚡</span> Workflows</a>
+  </div>
+  <div class="nav-section">
+    <h4>Communication</h4>
+    <a href="chat.html" class="nav-chat"><span class="nav-icon">💬</span> Chat</a>
+  </div>
+
+  <div class="nav-section">
+    <h4>Build</h4>
+    <a href="build.html" class="nav-build"><span class="nav-icon">🧠</span> Describe &amp; Build</a>
+  </div>
+
+  <div class="nav-section">
+    <h4>Account</h4>
+    <a href="membership.html" class="nav-membership"><span class="nav-icon">💎</span> Membership</a>
+  </div>
+
+  <div class="sidebar-profile">
+    <a href="profile.html" class="profile-link">
+      <div class="avatar">A</div>
+      <div class="profile-info">
+        <div class="profile-name">Akash</div>
+        <div class="profile-role">View &amp; Edit</div>
+      </div>
+      <div class="online-dot"></div>
+    </a>
+  </div>
+</div>
+<div class="main">
+  <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div><h1>AI Workforce</h1><p>Your deployed AI workforce — managing tasks around the clock</p></div>
+    <a href="createagents.html" class="btn">+ Create Workforce</a>
+  </div>
+  <div class="toolbar">
+    <input class="search" placeholder="🔍  Search workforce members…">
+    <select class="filter" style="width:160px"><option>All Types</option><option>Research</option><option>Coding</option><option>Marketing</option><option>Support</option></select>
+    <select class="filter" style="width:140px"><option>All Status</option><option>Active</option><option>Idle</option><option>Paused</option></select>
+  </div>
+  <div class="grid">
+    <div class="agent-card"><div class="agent-icon">🔍</div><div class="agent-name">Research Agent</div><div class="agent-role">Deep research &amp; summaries</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px"><span class="badge badge-green">● Active</span><span style="font-size:12px;color:#9CA3AF">Saved 4h today</span></div></div>
+    <div class="agent-card"><div class="agent-icon">💻</div><div class="agent-name">Coding Agent</div><div class="agent-role">Code generation &amp; debugging</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px"><span class="badge badge-green">● Active</span><span style="font-size:12px;color:#9CA3AF">Fixed 17 bugs</span></div></div>
+    <div class="agent-card"><div class="agent-icon">📈</div><div class="agent-name">Marketing Agent</div><div class="agent-role">Campaign creation &amp; outreach</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px"><span class="badge badge-teal">● Running</span><span style="font-size:12px;color:#9CA3AF">23 leads today</span></div></div>
+    <div class="agent-card"><div class="agent-icon">🎧</div><div class="agent-name">Support Agent</div><div class="agent-role">Customer support &amp; triage</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px"><span class="badge badge-purple">● Idle</span><span style="font-size:12px;color:#9CA3AF">48 resolved</span></div></div>
+    <div class="agent-card"><div class="agent-icon">📊</div><div class="agent-name">Analytics Agent</div><div class="agent-role">Data analysis &amp; reporting</div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px"><span class="badge badge-green">● Active</span><span style="font-size:12px;color:#9CA3AF">12 reports</span></div></div>
+    <div class="agent-card" style="border:2px dashed #E5E7EB;display:flex;align-items:center;justify-content:center;flex-direction:column;cursor:pointer;min-height:140px;box-shadow:none" onclick="location.href='createagents.html'">
+      <div style="font-size:28px;margin-bottom:8px;opacity:0.3">+</div>
+      <div style="font-size:13px;color:#9CA3AF">Add Workforce Member</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

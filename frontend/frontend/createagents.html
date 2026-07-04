@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Create Workforce — THE NEXUS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700&display=swap');
+.template-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
+.template-card.selected{border-color:#14b8a6;background:rgba(20,184,166,.08)}
+
+/* toast */
+.toast{position:fixed;bottom:28px;right:28px;background:#14b8a6;color:#fff;border-radius:10px;padding:12px 20px;font-size:14px;font-weight:500;z-index:999;opacity:0;transform:translateY(12px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.error{background:#ef4444}
+
+/* icon picker */
+.icon-options{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.icon-opt{font-size:22px;cursor:pointer;padding:6px 8px;border-radius:8px;border:2px solid transparent;transition:all .15s}
+.icon-opt:hover{background:#1f2937}
+.icon-opt.active{border-color:#14b8a6;background:rgba(20,184,166,.12)}
+</style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<div class="sidebar">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gCore" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="60%" stop-color="#14B8A6"/><stop offset="100%" stop-color="#0F766E"/></radialGradient>
+        <linearGradient id="gOrbit1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#14B8A6"/><stop offset="100%" stop-color="#0F766E"/></linearGradient>
+        <linearGradient id="gOrbit2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0F766E"/><stop offset="100%" stop-color="#22C55E"/></linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="1" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+      </defs>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(-35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit2)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.6" transform="rotate(90 18 18)"/>
+      <circle cx="18" cy="2.1"  r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="18" cy="33.9" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="2.1"  cy="18" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="33.9" cy="18" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="5.5"  cy="7"  r="1.5" fill="#14B8A6" opacity="0.8"/>
+      <circle cx="30.5" cy="29" r="1.5" fill="#22C55E" opacity="0.8"/>
+      <circle cx="18" cy="18" r="4" fill="url(#gCore)" filter="url(#glow)"/>
+      <circle cx="18" cy="18" r="2" fill="white" opacity="0.9"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">THE NEXUS</span>
+      <span class="logo-sub">a GPU-Nexus product</span>
+    </div>
+  </div>
+  <div class="nav-section"><h4>Overview</h4><a href="dashboard.html" class="nav-dashboard"><span class="nav-icon">⬛</span> Dashboard</a></div>
+  <div class="nav-section"><h4>AI Workforce</h4>
+    <a href="agents.html" class="nav-agents"><span class="nav-icon">🤖</span> AI Workforce</a>
+    <a href="createagents.html" class="nav-createagents active"><span class="nav-icon">✦</span> Create Workforce</a>
+  </div>
+  <div class="nav-section"><h4>Automation</h4><a href="workflow.html" class="nav-workflow"><span class="nav-icon">⚡</span> Workflows</a></div>
+  <div class="nav-section"><h4>Communication</h4><a href="chat.html" class="nav-chat"><span class="nav-icon">💬</span> Chat</a></div>
+  <div class="nav-section"><h4>Build</h4><a href="build.html" class="nav-build"><span class="nav-icon">🧠</span> Describe &amp; Build</a></div>
+  <div class="nav-section"><h4>Account</h4><a href="membership.html" class="nav-membership"><span class="nav-icon">💎</span> Membership</a></div>
+  <div class="sidebar-profile">
+    <a href="profile.html" class="profile-link">
+      <div class="avatar" id="sidebarAvatar">A</div>
+      <div class="profile-info"><div class="profile-name" id="sidebarName">User</div><div class="profile-role">View &amp; Edit</div></div>
+      <div class="online-dot"></div>
+    </a>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+  <div class="page-header"><h1>Create Workforce</h1><p>Assemble a ready-made AI team or build a custom workforce member</p></div>
+
+  <h3 style="font-size:13px;font-weight:600;color:#9CA3AF;margin-bottom:14px;letter-spacing:.5px">WORKFORCE TEMPLATES</h3>
+  <div class="template-grid" id="templateGrid">
+    <div class="template-card" id="tpl-software" onclick="selectWorkforce('software')"><div class="t-icon">🚀</div><div class="t-name">Software Startup Team</div><div class="t-desc">CEO, Architect, Devs &amp; QA</div></div>
+    <div class="template-card" id="tpl-student"  onclick="selectWorkforce('student')"><div class="t-icon">📚</div><div class="t-name">Student Team</div><div class="t-desc">Research &amp; study support</div></div>
+    <div class="template-card" id="tpl-marketing" onclick="selectWorkforce('marketing')"><div class="t-icon">📈</div><div class="t-name">Marketing Team</div><div class="t-desc">Campaigns &amp; outreach</div></div>
+    <div class="template-card" id="tpl-research" onclick="selectWorkforce('research')"><div class="t-icon">🔬</div><div class="t-name">Research Team</div><div class="t-desc">Deep research &amp; analysis</div></div>
+    <div class="template-card" id="tpl-business" onclick="selectWorkforce('business')"><div class="t-icon">💼</div><div class="t-name">Business Team</div><div class="t-desc">Strategy &amp; operations</div></div>
+    <div class="template-card" id="tpl-custom"   onclick="selectWorkforce('custom')"><div class="t-icon">✦</div><div class="t-name">Custom Workforce</div><div class="t-desc">Build from scratch</div></div>
+  </div>
+
+  <!-- Template preview -->
+  <div class="section-card" id="teamPreview" style="display:none;margin-bottom:24px">
+    <h3 id="teamPreviewTitle">Team Preview</h3>
+    <div style="font-size:12px;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Included Members</div>
+    <div id="teamPreviewMembers" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px"></div>
+    <div style="font-size:12px;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Recommended Models</div>
+    <div id="teamPreviewModels" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px"></div>
+    <button class="btn" id="deployBtn" onclick="deployWorkforce()">Deploy This Workforce</button>
+  </div>
+
+  <!-- Custom agent form -->
+  <div class="form-card" id="customForm" style="display:none">
+    <h3>Configure Your Workforce Member</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="field"><label>Member Name</label><input id="agentName" placeholder="e.g. My Research Bot"></div>
+      <div class="field"><label>Role</label><input id="agentRole" placeholder="e.g. Lead Researcher"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="field"><label>Type</label>
+        <select id="agentType"><option>Research</option><option>Coding</option><option>Marketing</option><option>Support</option><option>Analytics</option><option>Custom</option></select>
+      </div>
+      <div class="field">
+        <label>Icon</label>
+        <div class="icon-options" id="iconPicker">
+          <span class="icon-opt active" onclick="pickIcon(this,'🤖')">🤖</span>
+          <span class="icon-opt" onclick="pickIcon(this,'🔍')">🔍</span>
+          <span class="icon-opt" onclick="pickIcon(this,'💻')">💻</span>
+          <span class="icon-opt" onclick="pickIcon(this,'📈')">📈</span>
+          <span class="icon-opt" onclick="pickIcon(this,'🎧')">🎧</span>
+          <span class="icon-opt" onclick="pickIcon(this,'📊')">📊</span>
+          <span class="icon-opt" onclick="pickIcon(this,'🔬')">🔬</span>
+          <span class="icon-opt" onclick="pickIcon(this,'💼')">💼</span>
+          <span class="icon-opt" onclick="pickIcon(this,'🚀')">🚀</span>
+          <span class="icon-opt" onclick="pickIcon(this,'🧠')">🧠</span>
+        </div>
+        <input type="hidden" id="agentIcon" value="🤖">
+      </div>
+    </div>
+    <div class="field"><label>Description &amp; Instructions</label><textarea id="agentDesc" placeholder="Describe what this workforce member does…"></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn" id="createBtn" onclick="createAgent()">Deploy Member</button>
+      <button class="btn btn-ghost" onclick="location.href='agents.html'">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:8000';
+
+const workforceTemplates = {
+  software: { name:'Software Startup Team', members:[
+    {name:'CEO Agent',role:'Chief Executive',type:'Custom',icon:'🚀'},
+    {name:'Research Agent',role:'Market Research',type:'Research',icon:'🔍'},
+    {name:'System Architect',role:'Architecture Design',type:'Coding',icon:'🧠'},
+    {name:'Backend Developer',role:'Backend Engineering',type:'Coding',icon:'💻'},
+    {name:'Frontend Developer',role:'Frontend Engineering',type:'Coding',icon:'💻'},
+    {name:'QA Tester',role:'Quality Assurance',type:'Coding',icon:'🔬'},
+    {name:'Documentation Agent',role:'Docs & Writing',type:'Custom',icon:'📊'}
+  ], models:['DeepSeek R1','Qwen Coder','Llama 3','Mistral'] },
+
+  student: { name:'Student Team', members:[
+    {name:'Research Agent',role:'Academic Research',type:'Research',icon:'🔍'},
+    {name:'Notes Agent',role:'Note Taking',type:'Custom',icon:'📊'},
+    {name:'Tutor Agent',role:'Learning Support',type:'Custom',icon:'🧠'},
+    {name:'Documentation Agent',role:'Report Writing',type:'Custom',icon:'📚'}
+  ], models:['Llama 3','Mistral'] },
+
+  marketing: { name:'Marketing Team', members:[
+    {name:'Strategy Agent',role:'Marketing Strategy',type:'Marketing',icon:'📈'},
+    {name:'Copywriter Agent',role:'Content Creation',type:'Marketing',icon:'💼'},
+    {name:'SEO Agent',role:'Search Optimization',type:'Marketing',icon:'🔍'},
+    {name:'Outreach Agent',role:'Lead Generation',type:'Marketing',icon:'🎧'}
+  ], models:['Qwen Coder','Llama 3'] },
+
+  research: { name:'Research Team', members:[
+    {name:'Lead Research Agent',role:'Research Lead',type:'Research',icon:'🔬'},
+    {name:'Data Analyst Agent',role:'Data Analysis',type:'Analytics',icon:'📊'},
+    {name:'Summarizer Agent',role:'Summarization',type:'Research',icon:'🔍'}
+  ], models:['DeepSeek R1','Mistral'] },
+
+  business: { name:'Business Team', members:[
+    {name:'Strategy Agent',role:'Business Strategy',type:'Custom',icon:'💼'},
+    {name:'Operations Agent',role:'Operations',type:'Custom',icon:'🚀'},
+    {name:'Finance Agent',role:'Financial Analysis',type:'Analytics',icon:'📊'}
+  ], models:['Llama 3','Mistral'] }
+};
+
+let currentKey = null;
+
+// ── helpers ──────────────────────────────────────
+function token(){ return localStorage.getItem('token'); }
+function authHeaders(){ return {'Content-Type':'application/json','Authorization':'Bearer '+token()}; }
+function showToast(msg, isError=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show'+(isError?' error':'');
+  setTimeout(()=>t.className='toast',2800);
+}
+function setLoading(btnId, loading, label=''){
+  const b=document.getElementById(btnId);
+  if(loading){b.disabled=true;b.textContent='Deploying…';}
+  else{b.disabled=false;b.textContent=label;}
+}
+
+// ── boot ─────────────────────────────────────────
+(function boot(){
+  const name=localStorage.getItem('full_name')||'User';
+  document.getElementById('sidebarName').textContent=name;
+  document.getElementById('sidebarAvatar').textContent=name[0].toUpperCase();
+})();
+
+// ── template selection ────────────────────────────
+function selectWorkforce(key){
+  document.querySelectorAll('.template-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('tpl-'+key).classList.add('selected');
+
+  if(key==='custom'){
+    document.getElementById('teamPreview').style.display='none';
+    document.getElementById('customForm').style.display='block';
+    currentKey='custom';
+    return;
+  }
+  currentKey=key;
+  document.getElementById('customForm').style.display='none';
+  const team=workforceTemplates[key];
+  document.getElementById('teamPreviewTitle').textContent=team.name;
+  document.getElementById('teamPreviewMembers').innerHTML=
+    team.members.map(m=>`<span class="badge badge-teal">${m.icon} ${m.name}</span>`).join('');
+  document.getElementById('teamPreviewModels').innerHTML=
+    team.models.map(m=>`<span class="badge badge-purple">${m}</span>`).join('');
+  document.getElementById('teamPreview').style.display='block';
+}
+
+// ── icon picker ───────────────────────────────────
+function pickIcon(el, emoji){
+  document.querySelectorAll('.icon-opt').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('agentIcon').value=emoji;
+}
+
+// ── deploy template workforce ─────────────────────
+async function deployWorkforce(){
+  if(!currentKey || currentKey==='custom') return;
+  const team=workforceTemplates[currentKey];
+  setLoading('deployBtn',true);
+
+  let created=0;
+  for(const member of team.members){
+    try{
+      const res=await fetch(API+'/agents',{
+        method:'POST',
+        headers:authHeaders(),
+        body:JSON.stringify({
+          name:member.name,
+          role:member.role,
+          type:member.type,
+          icon:member.icon,
+          description:`${member.role} — part of the ${team.name}`,
+          status:'Active'
+        })
+      });
+      const data=await res.json();
+      if(data.success) created++;
+    } catch{}
+  }
+
+  setLoading('deployBtn',false,'Deploy This Workforce');
+  showToast(`✓ ${created} agents deployed!`);
+  setTimeout(()=>location.href='agents.html', 1200);
+}
+
+// ── create single custom agent ────────────────────
+async function createAgent(){
+  const name=document.getElementById('agentName').value.trim();
+  const role=document.getElementById('agentRole').value.trim();
+  const type=document.getElementById('agentType').value;
+  const icon=document.getElementById('agentIcon').value||'🤖';
+  const desc=document.getElementById('agentDesc').value.trim();
+
+  if(!name){ showToast('Please enter a member name',true); return; }
+  if(!role){ showToast('Please enter a role',true); return; }
+
+  setLoading('createBtn',true);
+
+  try{
+    const res=await fetch(API+'/agents',{
+      method:'POST',
+      headers:authHeaders(),
+      body:JSON.stringify({name,role,type,icon,description:desc,status:'Active'})
+    });
+    const data=await res.json();
+    if(data.success){
+      showToast('✓ Workforce member deployed!');
+      setTimeout(()=>location.href='agents.html',1000);
+    } else {
+      showToast(data.message||'Failed to create agent',true);
+      setLoading('createBtn',false,'Deploy Member');
+    }
+  } catch{
+    showToast('Network error',true);
+    setLoading('createBtn',false,'Deploy Member');
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Describe & Build — THE NEXUS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700&display=swap');</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gCore" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#14B8A6"/>
+          <stop offset="100%" stop-color="#0F766E"/>
+        </radialGradient>
+        <linearGradient id="gOrbit1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#14B8A6"/>
+          <stop offset="100%" stop-color="#0F766E"/>
+        </linearGradient>
+        <linearGradient id="gOrbit2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#0F766E"/>
+          <stop offset="100%" stop-color="#22C55E"/>
+        </linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="1" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+      </defs>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(-35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit2)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.6" transform="rotate(90 18 18)"/>
+      <circle cx="18" cy="2.1" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="18" cy="33.9" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="2.1" cy="18" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="33.9" cy="18" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="5.5" cy="7" r="1.5" fill="#14B8A6" opacity="0.8"/>
+      <circle cx="30.5" cy="29" r="1.5" fill="#22C55E" opacity="0.8"/>
+      <circle cx="18" cy="18" r="4" fill="url(#gCore)" filter="url(#glow)"/>
+      <circle cx="18" cy="18" r="2" fill="white" opacity="0.9"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">THE NEXUS</span>
+      <span class="logo-sub">a GPU-Nexus product</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <h4>Overview</h4>
+    <a href="dashboard.html" class="nav-dashboard"><span class="nav-icon">⬛</span> Dashboard</a>
+  </div>
+  <div class="nav-section">
+    <h4>AI Workforce</h4>
+    <a href="agents.html" class="nav-agents"><span class="nav-icon">🤖</span> AI Workforce</a>
+    <a href="createagents.html" class="nav-createagents"><span class="nav-icon">✦</span> Create Workforce</a>
+  </div>
+  <div class="nav-section">
+    <h4>Intelligence</h4>
+    <a href="multiagent.html" class="nav-multiagent"><span class="nav-icon">🧬</span> Multi-Agent Engine</a>
+  </div>
+  <div class="nav-section">
+    <h4>Automation</h4>
+    <a href="workflow.html" class="nav-workflow"><span class="nav-icon">⚡</span> Workflows</a>
+  </div>
+  <div class="nav-section">
+    <h4>Communication</h4>
+    <a href="chat.html" class="nav-chat"><span class="nav-icon">💬</span> Chat</a>
+  </div>
+
+  <div class="nav-section">
+    <h4>Build</h4>
+    <a href="build.html" class="nav-build active"><span class="nav-icon">🧠</span> Describe &amp; Build</a>
+  </div>
+
+  <div class="nav-section">
+    <h4>Account</h4>
+    <a href="membership.html" class="nav-membership"><span class="nav-icon">💎</span> Membership</a>
+  </div>
+
+  <div class="sidebar-profile">
+    <a href="profile.html" class="profile-link">
+      <div class="avatar">A</div>
+      <div class="profile-info">
+        <div class="profile-name">Akash</div>
+        <div class="profile-role">View &amp; Edit</div>
+      </div>
+      <div class="online-dot"></div>
+    </a>
+  </div>
+</div>
+<div class="main">
+  <div class="page-header"><h1>Describe &amp; Build</h1><p>Tell us what you want to make — Nexus figures out the right AI team and model combo, you pick one, then build it in chat.</p></div>
+
+  <div class="build-steps">
+    <div class="build-step-pill active" id="stepPill1"><span class="n">1</span> Describe</div>
+    <span class="build-step-arrow">→</span>
+    <div class="build-step-pill" id="stepPill2"><span class="n">2</span> Pick a Model Combo</div>
+    <span class="build-step-arrow">→</span>
+    <div class="build-step-pill" id="stepPill3"><span class="n">3</span> Build in Chat</div>
+  </div>
+
+  <div class="form-card" style="margin-bottom:24px">
+    <h3>What do you want to make?</h3>
+    <div class="field">
+      <textarea id="ideaInput" placeholder="e.g. hospitality management system, e-commerce store, fitness app, school management system…" style="min-height:90px"></textarea>
+    </div>
+    <button class="btn" onclick="analyzeIdea()">✦ Suggest My Team</button>
+  </div>
+
+  <div id="resultSection" style="display:none">
+    <div class="section-card" style="margin-bottom:24px">
+      <div class="detected-project">
+        <div class="icon" id="detectedIcon">🧩</div>
+        <div>
+          <div class="label">We think you want to build</div>
+          <div class="name" id="detectedName">—</div>
+        </div>
+      </div>
+
+      <h3 style="font-size:13px;font-weight:600;color:#9CA3AF;letter-spacing:0.5px;margin-bottom:14px">CHOOSE YOUR MODEL COMBINATION</h3>
+      <div class="combo-grid" id="comboGrid"></div>
+
+      <button class="btn" id="startBuildBtn" onclick="startBuild()" disabled>💬 Start Building in Chat</button>
+    </div>
+  </div>
+</div>
+<script>
+const projectLibrary = [
+  { keys: ['hospitality','hotel','resort','booking'], icon:'🏨', name:'Hospitality Management System',
+    combos: [
+      { name:'Balanced Build', models:['DeepSeek R1','Qwen Coder'], desc:'Great mix of booking logic and clean front-end code.' },
+      { name:'Deep Reasoning', models:['Llama 3','Mistral'], desc:'Best for complex multi-property, multi-room pricing logic.' },
+      { name:'Fast Prototype', models:['Qwen Coder','Mistral'], desc:'Quickest path to a working demo.' }
+    ]},
+  { keys: ['ecommerce','e-commerce','online store','shop'], icon:'🛒', name:'E-Commerce Store',
+    combos: [
+      { name:'Balanced Build', models:['Qwen Coder','Llama 3'], desc:'Solid for catalog, cart and checkout flows.' },
+      { name:'Conversion Focused', models:['DeepSeek R1','Mistral'], desc:'Stronger copywriting and recommendation logic.' },
+      { name:'Fast Prototype', models:['Qwen Coder','Mistral'], desc:'Quickest path to a working demo.' }
+    ]},
+  { keys: ['school','college','student management','education','lms'], icon:'🎓', name:'School Management System',
+    combos: [
+      { name:'Balanced Build', models:['Llama 3','Qwen Coder'], desc:'Handles attendance, grading and dashboards well.' },
+      { name:'Deep Reasoning', models:['DeepSeek R1','Mistral'], desc:'Best for complex scheduling and report logic.' },
+      { name:'Fast Prototype', models:['Qwen Coder','Mistral'], desc:'Quickest path to a working demo.' }
+    ]},
+  { keys: ['fitness','gym','workout','health tracker'], icon:'💪', name:'Fitness Tracking App',
+    combos: [
+      { name:'Balanced Build', models:['Qwen Coder','Llama 3'], desc:'Good for workout logs and progress charts.' },
+      { name:'Data Heavy', models:['DeepSeek R1','Mistral'], desc:'Best if you need detailed analytics and plans.' },
+      { name:'Fast Prototype', models:['Qwen Coder','Mistral'], desc:'Quickest path to a working demo.' }
+    ]},
+  { keys: ['inventory','warehouse','stock management'], icon:'📦', name:'Inventory Management System',
+    combos: [
+      { name:'Balanced Build', models:['Llama 3','Qwen Coder'], desc:'Reliable for stock tracking and alerts.' },
+      { name:'Deep Reasoning', models:['DeepSeek R1','Mistral'], desc:'Best for demand forecasting logic.' },
+      { name:'Fast Prototype', models:['Qwen Coder','Mistral'], desc:'Quickest path to a working demo.' }
+    ]},
+  { keys: ['crm','sales tool','lead management'], icon:'📇', name:'CRM / Sales Tool',
+    combos: [
+      { name:'Balanced Build', models:['Qwen Coder','Llama 3'], desc:'Good for pipelines, contacts and notes.' },
+      { name:'Outreach Focused', models:['DeepSeek R1','Mistral'], desc:'Stronger at drafting emails and follow-ups.' },
+      { name:'Fast Prototype', models:['Qwen Coder','Mistral'], desc:'Quickest path to a working demo.' }
+    ]},
+  { keys: ['social media','social app','community app'], icon:'💬', name:'Social Media App',
+    combos: [
+      { name:'Balanced Build', models:['Llama 3','Qwen Coder'], desc:'Handles feeds, profiles and posts well.' },
+      { name:'Deep Reasoning', models:['DeepSeek R1','Mistral'], desc:'Best for moderation and ranking logic.' },
+      { name:'Fast Prototype', models:['Qwen Coder','Mistral'], desc:'Quickest path to a working demo.' }
+    ]},
+  { keys: ['blog','content site','publishing'], icon:'✍️', name:'Blogging Platform',
+    combos: [
+      { name:'Balanced Build', models:['Qwen Coder','Llama 3'], desc:'Good for editor, posts and comments.' },
+      { name:'Writing Focused', models:['DeepSeek R1','Mistral'], desc:'Stronger at drafting and editing content.' },
+      { name:'Fast Prototype', models:['Qwen Coder','Mistral'], desc:'Quickest path to a working demo.' }
+    ]}
+];
+
+const defaultProject = { icon:'🧩', name:'Custom Software Project',
+  combos: [
+    { name:'Balanced Build', models:['Qwen Coder','Llama 3'], desc:'A solid general-purpose combo for most apps.' },
+    { name:'Deep Reasoning', models:['DeepSeek R1','Mistral'], desc:'Best for complex business logic.' },
+    { name:'Fast Prototype', models:['Qwen Coder','Mistral'], desc:'Quickest path to a working demo.' }
+  ]};
+
+let selectedCombo = null;
+let detectedProjectName = '';
+
+function analyzeIdea(){
+  const raw = document.getElementById('ideaInput').value.trim().toLowerCase();
+  if(!raw){ return; }
+  const match = projectLibrary.find(p => p.keys.some(k => raw.includes(k)));
+  const project = match || defaultProject;
+  detectedProjectName = project.name;
+
+  document.getElementById('detectedIcon').textContent = project.icon;
+  document.getElementById('detectedName').textContent = project.name;
+
+  const grid = document.getElementById('comboGrid');
+  grid.innerHTML = project.combos.map((c, i) => `
+    <div class="combo-card" data-index="${i}" onclick="pickCombo(${i}, this)">
+      <div class="combo-name">${c.name}</div>
+      <div class="combo-desc">${c.desc}</div>
+      <div class="combo-models">${c.models.map(m=>`<span class="badge badge-purple">${m}</span>`).join('')}</div>
+    </div>
+  `).join('');
+
+  window.currentCombos = project.combos;
+  selectedCombo = null;
+  document.getElementById('startBuildBtn').disabled = true;
+  document.getElementById('resultSection').style.display = 'block';
+  document.getElementById('stepPill2').classList.add('active');
+  document.getElementById('resultSection').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function pickCombo(index, el){
+  document.querySelectorAll('.combo-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedCombo = window.currentCombos[index];
+  document.getElementById('startBuildBtn').disabled = false;
+  document.getElementById('stepPill3').classList.add('active');
+}
+
+function startBuild(){
+  if(!selectedCombo) return;
+  const params = new URLSearchParams({
+    project: detectedProjectName,
+    models: selectedCombo.models.join(' + ')
+  });
+  window.location.href = 'chat.html?' + params.toString();
+}
+</script>
+</body>
+</html>

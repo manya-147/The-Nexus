@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Multi-Agent Engine — THE NEXUS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700&display=swap');
+
+/* ── layout ── */
+.mae-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+@media(max-width:900px){ .mae-layout { grid-template-columns: 1fr; } }
+
+/* ── input panel ── */
+.mae-input-panel { background:#fff; border-radius:18px; padding:28px; box-shadow:0 6px 18px rgba(0,0,0,.06); }
+.mae-input-panel h2 { font-size:16px; font-weight:700; margin-bottom:6px; }
+.mae-input-panel p  { font-size:13px; color:#6B7280; margin-bottom:20px; }
+.mae-textarea {
+  width:100%; box-sizing:border-box;
+  min-height:110px; resize:vertical;
+  border:1.5px solid #E5E7EB; border-radius:12px;
+  padding:14px 16px; font-size:14px; font-family:inherit;
+  outline:none; transition:border 0.2s;
+}
+.mae-textarea:focus { border-color:#14B8A6; }
+
+/* ── agent chips ── */
+.agent-chips { display:flex; flex-wrap:wrap; gap:8px; margin:16px 0; }
+.agent-chip {
+  display:flex; align-items:center; gap:6px;
+  padding:6px 12px; border-radius:20px;
+  font-size:12px; font-weight:500;
+  border:1.5px solid transparent; cursor:pointer;
+  transition:all 0.2s; user-select:none;
+}
+.agent-chip:hover { transform:translateY(-1px); box-shadow:0 3px 8px rgba(0,0,0,.1); }
+.agent-chip.selected { border-color:#14B8A6; box-shadow:0 0 0 2px rgba(20,184,166,0.2); }
+.chip-icon { font-size:15px; }
+
+/* ── run button ── */
+.mae-run-btn {
+  width:100%; padding:14px; border-radius:12px;
+  background:linear-gradient(135deg,#14B8A6,#0F766E);
+  color:#fff; font-size:15px; font-weight:600;
+  border:none; cursor:pointer; transition:opacity 0.2s;
+  margin-top:16px;
+}
+.mae-run-btn:disabled { opacity:0.5; cursor:not-allowed; }
+.mae-run-btn:hover:not(:disabled) { opacity:0.9; }
+
+/* ── sidebar: roster ── */
+.mae-roster { background:#fff; border-radius:18px; padding:22px; box-shadow:0 6px 18px rgba(0,0,0,.06); }
+.mae-roster h3 { font-size:12px; color:#9CA3AF; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:14px; }
+.roster-item { display:flex; align-items:center; gap:10px; padding:10px; border-radius:10px; margin-bottom:6px; border:1.5px solid #F3F4F6; }
+.roster-icon { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
+.roster-name { font-size:13px; font-weight:600; }
+.roster-desc { font-size:11px; color:#9CA3AF; }
+
+/* ── results area ── */
+.mae-results { margin-top:24px; }
+.mae-results-title { font-size:13px; font-weight:700; color:#374151; letter-spacing:0.4px; text-transform:uppercase; margin-bottom:14px; }
+
+/* ── pipeline visualiser ── */
+.pipeline {
+  display:flex; align-items:flex-start; gap:0;
+  overflow-x:auto; padding-bottom:8px;
+  margin-bottom:24px;
+}
+.pipeline-node {
+  display:flex; flex-direction:column; align-items:center;
+  min-width:110px;
+}
+.pipeline-circle {
+  width:52px; height:52px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; border:2px solid #E5E7EB;
+  transition:all 0.4s;
+}
+.pipeline-circle.active { border-color:#14B8A6; box-shadow:0 0 0 4px rgba(20,184,166,0.15); }
+.pipeline-circle.done   { border-color:#22C55E; background:#F0FDF4; }
+.pipeline-label { font-size:11px; font-weight:500; color:#6B7280; margin-top:6px; text-align:center; }
+.pipeline-arrow {
+  display:flex; align-items:center; padding-top:24px;
+  color:#D1D5DB; font-size:18px; margin:0 4px;
+}
+
+/* ── step cards ── */
+.step-card {
+  border-radius:14px; padding:18px 20px;
+  margin-bottom:12px; border:1.5px solid #F3F4F6;
+  opacity:0; transform:translateY(10px);
+  transition:opacity 0.4s ease, transform 0.4s ease;
+}
+.step-card.visible { opacity:1; transform:translateY(0); }
+.step-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.step-badge { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; }
+.step-badge-icon { font-size:17px; }
+.step-sub-task { font-size:12px; color:#9CA3AF; margin-bottom:8px; font-style:italic; }
+.step-result { font-size:13.5px; line-height:1.65; white-space:pre-wrap; }
+
+/* ── final answer ── */
+.final-card {
+  background:linear-gradient(135deg,#F0FDFA,#ECFDF5);
+  border:1.5px solid #99F6E4;
+  border-radius:16px; padding:22px;
+  margin-top:8px;
+}
+.final-label { font-size:11px; font-weight:700; color:#0F766E; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.final-content { font-size:14px; line-height:1.7; white-space:pre-wrap; }
+
+/* ── skeleton / spinner ── */
+.spinner { display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,.4); border-top-color:#fff; border-radius:50%; animation:spin 0.7s linear infinite; margin-right:8px; vertical-align:middle; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.skeleton { height:14px; border-radius:6px; background:linear-gradient(90deg,#F3F4F6 25%,#E5E7EB 50%,#F3F4F6 75%); background-size:200% 100%; animation:shimmer 1.2s infinite; margin-bottom:8px; }
+@keyframes shimmer { to { background-position:-200% 0; } }
+
+/* ── empty state ── */
+.empty-state { text-align:center; padding:48px 24px; color:#9CA3AF; }
+.empty-state .empty-icon { font-size:42px; margin-bottom:12px; }
+.empty-state p { font-size:13px; }
+
+/* ── progress bar ── */
+.progress-bar-wrap { height:4px; border-radius:4px; background:#E5E7EB; margin:12px 0; overflow:hidden; }
+.progress-bar { height:100%; border-radius:4px; background:linear-gradient(90deg,#14B8A6,#22C55E); width:0%; transition:width 0.5s ease; }
+</style>
+</head>
+<body>
+
+<!-- ────────────────── SIDEBAR ────────────────── -->
+<div class="sidebar">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gCore" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#14B8A6"/>
+          <stop offset="100%" stop-color="#0F766E"/>
+        </radialGradient>
+        <linearGradient id="gOrbit1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#14B8A6"/>
+          <stop offset="100%" stop-color="#0F766E"/>
+        </linearGradient>
+        <linearGradient id="gOrbit2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#0F766E"/>
+          <stop offset="100%" stop-color="#22C55E"/>
+        </linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="1" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+      </defs>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(-35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit2)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.6" transform="rotate(90 18 18)"/>
+      <circle cx="18" cy="2.1" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="18" cy="33.9" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="2.1" cy="18" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="33.9" cy="18" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="5.5" cy="7" r="1.5" fill="#14B8A6" opacity="0.8"/>
+      <circle cx="30.5" cy="29" r="1.5" fill="#22C55E" opacity="0.8"/>
+      <circle cx="18" cy="18" r="4" fill="url(#gCore)" filter="url(#glow)"/>
+      <circle cx="18" cy="18" r="2" fill="white" opacity="0.9"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">THE NEXUS</span>
+      <span class="logo-sub">a GPU-Nexus product</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <h4>Overview</h4>
+    <a href="dashboard.html" class="nav-dashboard"><span class="nav-icon">⬛</span> Dashboard</a>
+  </div>
+  <div class="nav-section">
+    <h4>AI Workforce</h4>
+    <a href="agents.html" class="nav-agents"><span class="nav-icon">🤖</span> AI Workforce</a>
+    <a href="createagents.html" class="nav-createagents"><span class="nav-icon">✦</span> Create Workforce</a>
+  </div>
+  <div class="nav-section">
+    <h4>Intelligence</h4>
+    <a href="multiagent.html" class="nav-multiagent active"><span class="nav-icon">🧬</span> Multi-Agent Engine</a>
+  </div>
+  <div class="nav-section">
+    <h4>Automation</h4>
+    <a href="workflow.html" class="nav-workflow"><span class="nav-icon">⚡</span> Workflows</a>
+  </div>
+  <div class="nav-section">
+    <h4>Communication</h4>
+    <a href="chat.html" class="nav-chat"><span class="nav-icon">💬</span> Chat</a>
+  </div>
+  <div class="nav-section">
+    <h4>Build</h4>
+    <a href="build.html" class="nav-build"><span class="nav-icon">🧠</span> Describe &amp; Build</a>
+  </div>
+  <div class="nav-section">
+    <h4>Account</h4>
+    <a href="membership.html" class="nav-membership"><span class="nav-icon">💎</span> Membership</a>
+  </div>
+
+  <div class="sidebar-profile">
+    <a href="profile.html" class="profile-link">
+      <div class="avatar" id="sidebarInitial">A</div>
+      <div class="profile-info">
+        <div class="profile-name" id="sidebarName">Loading…</div>
+        <div class="profile-role">View &amp; Edit</div>
+      </div>
+      <div class="online-dot"></div>
+    </a>
+  </div>
+</div>
+
+<!-- ────────────────── MAIN ────────────────── -->
+<div class="main">
+  <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+    <div>
+      <h1>🧬 Multi-Agent Engine</h1>
+      <p>Submit a task — the Supervisor decomposes it and routes each sub-task to the right specialist agent, then synthesises a final answer.</p>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:#9CA3AF">
+      <span id="engineStatus" style="display:flex;align-items:center;gap:5px">
+        <span style="width:8px;height:8px;border-radius:50%;background:#22C55E;display:inline-block"></span>
+        Engine Ready
+      </span>
+    </div>
+  </div>
+
+  <div class="mae-layout">
+
+    <!-- LEFT: input + results -->
+    <div>
+      <!-- Input Panel -->
+      <div class="mae-input-panel">
+        <h2>New Task</h2>
+        <p>Describe a complex task and the engine will automatically route it to the best combination of agents.</p>
+
+        <textarea id="taskInput" class="mae-textarea"
+          placeholder="e.g. Research the AI chip market, write a blog post about the top 3 trends, and generate a Python script to visualise the data…"></textarea>
+
+        <!-- Agent filter chips (optional override) -->
+        <div style="font-size:12px;font-weight:600;color:#6B7280;margin-bottom:8px;margin-top:4px">
+          Preferred agents <span style="font-weight:400;color:#9CA3AF">(optional — auto-selected if none chosen)</span>
+        </div>
+        <div class="agent-chips" id="agentChips">
+          <!-- populated by JS -->
+        </div>
+
+        <div class="progress-bar-wrap" id="progressWrap" style="display:none">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <button class="mae-run-btn" id="runBtn" onclick="runTask()">
+          Run Multi-Agent Pipeline
+        </button>
+
+        <!-- Example tasks -->
+        <div style="margin-top:20px;padding-top:18px;border-top:1px solid #F3F4F6">
+          <div style="font-size:11px;color:#9CA3AF;font-weight:600;letter-spacing:0.6px;text-transform:uppercase;margin-bottom:10px">Example tasks</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px" id="exampleTasks"></div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="mae-results" id="resultsSection" style="display:none">
+        <div class="mae-results-title">Pipeline Results</div>
+
+        <!-- Pipeline visualiser -->
+        <div class="pipeline" id="pipelineViz"></div>
+
+        <!-- Step cards -->
+        <div id="stepCards"></div>
+
+        <!-- Final answer -->
+        <div class="final-card" id="finalCard" style="display:none">
+          <div class="final-label">✦ Supervisor Synthesis</div>
+          <div class="final-content" id="finalContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: agent roster -->
+    <div>
+      <div class="mae-roster">
+        <h3>Available Agents</h3>
+        <div id="rosterList">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+      <!-- run history (session) -->
+      <div class="mae-roster" style="margin-top:16px" id="historyPanel">
+        <h3>Session History</h3>
+        <div id="historyList">
+          <div style="font-size:13px;color:#9CA3AF;padding:8px 0">No runs yet.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ────────────────── SCRIPTS ────────────────── -->
+<script>
+const API = 'http://localhost:8000';
+const token = localStorage.getItem('token');
+if (!token) window.location.href = 'login.html';
+
+function authHeaders() {
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token };
+}
+
+// ── load sidebar profile ──────────────────────────────────────────
+(async function loadProfile() {
+  try {
+    const res = await fetch(API + '/profile', { headers: authHeaders() });
+    const d = await res.json();
+    if (d.full_name) {
+      document.getElementById('sidebarName').textContent = d.full_name;
+      document.getElementById('sidebarInitial').textContent = d.full_name[0].toUpperCase();
+    }
+  } catch(e) {}
+})();
+
+// ── roster + chips ────────────────────────────────────────────────
+const ROSTER_FALLBACK = [
+  { key:'research',  name:'Research Agent',   icon:'🔍', description:'Deep research, summarisation',      color:'#CCFBF1' },
+  { key:'coding',    name:'Coding Agent',      icon:'💻', description:'Code generation, debugging',        color:'#EDE9FE' },
+  { key:'marketing', name:'Marketing Agent',   icon:'📈', description:'Campaign copy, growth tactics',     color:'#DCFCE7' },
+  { key:'support',   name:'Support Agent',     icon:'🎧', description:'Customer support & triage',         color:'#FEF3C7' },
+  { key:'analytics', name:'Analytics Agent',   icon:'📊', description:'Data analysis, metrics, reporting', color:'#FEE2E2' },
+  { key:'writer',    name:'Writer Agent',       icon:'✍️', description:'Long-form content, docs, summaries',color:'#E0F2FE' },
+];
+
+let rosterData = [];
+let selectedChips = new Set();
+
+async function loadRoster() {
+  try {
+    const res = await fetch(API + '/multi-agent/agents', { headers: authHeaders() });
+    const d = await res.json();
+    if (d.success && d.agents) {
+      rosterData = d.agents;
+    } else {
+      rosterData = ROSTER_FALLBACK;
+    }
+  } catch(e) {
+    rosterData = ROSTER_FALLBACK;
+  }
+  renderRoster();
+  renderChips();
+}
+
+function renderRoster() {
+  const el = document.getElementById('rosterList');
+  el.innerHTML = rosterData.map(a => `
+    <div class="roster-item">
+      <div class="roster-icon" style="background:${a.color}">${a.icon}</div>
+      <div>
+        <div class="roster-name">${a.name}</div>
+        <div class="roster-desc">${a.description}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderChips() {
+  const el = document.getElementById('agentChips');
+  el.innerHTML = rosterData.map(a => `
+    <div class="agent-chip" id="chip-${a.key}" style="background:${a.color}"
+         onclick="toggleChip('${a.key}')">
+      <span class="chip-icon">${a.icon}</span>
+      <span>${a.name.replace(' Agent','')}</span>
+    </div>
+  `).join('');
+}
+
+function toggleChip(key) {
+  const chip = document.getElementById('chip-' + key);
+  if (selectedChips.has(key)) {
+    selectedChips.delete(key);
+    chip.classList.remove('selected');
+  } else {
+    selectedChips.add(key);
+    chip.classList.add('selected');
+  }
+}
+
+// ── example tasks ─────────────────────────────────────────────────
+const EXAMPLES = [
+  'Research the top 3 AI chip companies and write a market summary',
+  'Build a Python web scraper and document how to run it',
+  'Create a social media campaign for a SaaS product launch',
+  'Analyse customer churn metrics and suggest retention tactics',
+  'Write a technical blog post about LLM fine-tuning with code examples',
+];
+
+function renderExamples() {
+  const el = document.getElementById('exampleTasks');
+  el.innerHTML = EXAMPLES.map(e => `
+    <div onclick="useExample(this)" style="
+      background:#F9FAFB;border:1.5px solid #E5E7EB;border-radius:8px;
+      padding:7px 12px;font-size:12px;cursor:pointer;transition:all 0.2s;
+      color:#374151;max-width:260px;
+    " onmouseover="this.style.borderColor='#14B8A6'" onmouseout="this.style.borderColor='#E5E7EB'"
+    >${e}</div>
+  `).join('');
+}
+
+function useExample(el) {
+  document.getElementById('taskInput').value = el.textContent;
+  document.getElementById('taskInput').focus();
+}
+
+// ── session history ───────────────────────────────────────────────
+const sessionHistory = [];
+
+function addHistory(task, agents) {
+  sessionHistory.unshift({ task, agents, time: new Date().toLocaleTimeString() });
+  const el = document.getElementById('historyList');
+  el.innerHTML = sessionHistory.slice(0, 6).map((h, i) => `
+    <div onclick="reRunHistory(${i})" style="
+      padding:10px;border-radius:10px;border:1.5px solid #F3F4F6;
+      margin-bottom:6px;cursor:pointer;transition:border 0.2s;
+    " onmouseover="this.style.borderColor='#14B8A6'" onmouseout="this.style.borderColor='#F3F4F6'">
+      <div style="font-size:12px;font-weight:600;color:#374151;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${h.task}</div>
+      <div style="font-size:11px;color:#9CA3AF">${h.agents.join(' → ')} · ${h.time}</div>
+    </div>
+  `).join('');
+}
+
+function reRunHistory(i) {
+  document.getElementById('taskInput').value = sessionHistory[i].task;
+  runTask();
+}
+
+// ── progress ──────────────────────────────────────────────────────
+function setProgress(pct) {
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+// ── pipeline viz ──────────────────────────────────────────────────
+function renderPipeline(steps, activeIdx) {
+  const viz = document.getElementById('pipelineViz');
+  let html = '';
+  // Supervisor start
+  html += `<div class="pipeline-node">
+    <div class="pipeline-circle done" style="background:#FEF3C7;border-color:#F59E0B">🧩</div>
+    <div class="pipeline-label">Supervisor</div>
+  </div>`;
+
+  steps.forEach((s, i) => {
+    html += `<div class="pipeline-arrow">›</div>`;
+    const state = i < activeIdx ? 'done' : (i === activeIdx ? 'active' : '');
+    html += `<div class="pipeline-node">
+      <div class="pipeline-circle ${state}" id="pnode-${i}">${s.icon || '🤖'}</div>
+      <div class="pipeline-label">${(s.agent_name||s.agent).replace(' Agent','')}</div>
+    </div>`;
+  });
+
+  html += `<div class="pipeline-arrow">›</div>`;
+  const synthState = activeIdx >= steps.length ? 'done' : '';
+  html += `<div class="pipeline-node">
+    <div class="pipeline-circle ${synthState}" style="background:${synthState?'#F0FDF4':'#fff'};border-color:${synthState?'#22C55E':'#E5E7EB'}">✦</div>
+    <div class="pipeline-label">Synthesis</div>
+  </div>`;
+
+  viz.innerHTML = html;
+}
+
+// ── step cards ────────────────────────────────────────────────────
+function formatText(text) {
+  const esc = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return esc
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\n/g,'<br>');
+}
+
+function appendStepCard(step, color) {
+  const cards = document.getElementById('stepCards');
+  const div = document.createElement('div');
+  div.className = 'step-card';
+  div.style.background = color ? color + '30' : '#F9FAFB';
+  div.style.borderColor = color ? color : '#F3F4F6';
+  div.innerHTML = `
+    <div class="step-header">
+      <div class="step-badge">
+        <span class="step-badge-icon">${step.icon || '🤖'}</span>
+        <span>${step.agent_name || step.agent}</span>
+      </div>
+    </div>
+    <div class="step-sub-task">↳ ${step.sub_task}</div>
+    <div class="step-result">${formatText(step.result)}</div>
+  `;
+  cards.appendChild(div);
+  // Trigger animation
+  requestAnimationFrame(() => { requestAnimationFrame(() => { div.classList.add('visible'); }); });
+}
+
+// ── MAIN RUN ──────────────────────────────────────────────────────
+async function runTask() {
+  const task = document.getElementById('taskInput').value.trim();
+  if (!task) {
+    document.getElementById('taskInput').focus();
+    return;
+  }
+
+  // Reset UI
+  document.getElementById('resultsSection').style.display = 'block';
+  document.getElementById('stepCards').innerHTML = '';
+  document.getElementById('pipelineViz').innerHTML = '';
+  document.getElementById('finalCard').style.display = 'none';
+  document.getElementById('progressWrap').style.display = 'block';
+  setProgress(5);
+
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Running pipeline…';
+
+  document.getElementById('resultsSection').scrollIntoView({ behavior:'smooth', block:'start' });
+
+  try {
+    setProgress(20);
+
+    const res = await fetch(API + '/multi-agent/run', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ task })
+    });
+
+    setProgress(70);
+
+    const data = await res.json();
+
+    if (!data.success) {
+      document.getElementById('stepCards').innerHTML = `
+        <div style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:12px;padding:16px;color:#B91C1C;font-size:13px">
+          ⚠️ ${data.message || 'Engine error — please try again.'}
+        </div>`;
+      return;
+    }
+
+    setProgress(85);
+
+    const steps = data.steps || [];
+    const agentColors = {};
+    rosterData.forEach(a => { agentColors[a.key] = a.color; });
+
+    // Render pipeline header
+    renderPipeline(steps, steps.length);
+    setProgress(92);
+
+    // Render step cards
+    steps.forEach((step, i) => {
+      appendStepCard(step, agentColors[step.agent]);
+    });
+
+    // Final answer
+    if (data.final_answer) {
+      const fc = document.getElementById('finalCard');
+      document.getElementById('finalContent').innerHTML = formatText(data.final_answer);
+      fc.style.display = 'block';
+      requestAnimationFrame(() => { fc.style.opacity = '1'; });
+    }
+
+    setProgress(100);
+
+    // History
+    const agentNames = steps.map(s => s.icon || s.agent);
+    addHistory(task, agentNames);
+
+  } catch(e) {
+    document.getElementById('stepCards').innerHTML = `
+      <div style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:12px;padding:16px;color:#B91C1C;font-size:13px">
+        ⚠️ Could not reach the backend. Make sure it is running at <strong>${API}</strong>.
+      </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Run Multi-Agent Pipeline';
+    setTimeout(() => {
+      document.getElementById('progressWrap').style.display = 'none';
+      setProgress(0);
+    }, 800);
+  }
+}
+
+// ── keyboard shortcut ─────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') runTask();
+});
+
+// ── boot ─────────────────────────────────────────────────────────
+loadRoster();
+renderExamples();
+</script>
+</body>
+</html>

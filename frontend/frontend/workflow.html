@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workflow Studio — THE NEXUS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700&display=swap');
+
+/* ── Workflow Studio overrides ── */
+.wf-tabs{display:flex;gap:4px;background:#F3F4F6;border-radius:10px;padding:4px;margin-bottom:24px;width:fit-content}
+.wf-tab{padding:7px 18px;border-radius:7px;font-size:13px;font-weight:500;color:#6B7280;cursor:pointer;border:none;background:none;transition:all .18s}
+.wf-tab.active{background:#fff;color:#111;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+
+/* builder canvas */
+.builder-canvas{background:#F9FAFB;border:1.5px dashed #E5E7EB;border-radius:16px;min-height:340px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:0;position:relative}
+.builder-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#9CA3AF;min-height:240px}
+.builder-empty svg{opacity:.35}
+
+/* step cards */
+.wf-step-card{width:100%;max-width:480px;background:#fff;border:1.5px solid #E5E7EB;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:grab;transition:box-shadow .15s,border-color .15s;position:relative}
+.wf-step-card:hover{border-color:#14B8A6;box-shadow:0 4px 12px rgba(20,184,166,.12)}
+.wf-step-card.dragging{opacity:.5;border-style:dashed}
+.step-badge{width:28px;height:28px;background:linear-gradient(135deg,#14B8A6,#0F766E);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.step-icon{font-size:20px;flex-shrink:0}
+.step-meta{flex:1;min-width:0}
+.step-label{font-weight:600;font-size:13.5px;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.step-agent-tag{font-size:11px;color:#9CA3AF;margin-top:1px}
+.step-remove{width:24px;height:24px;border-radius:6px;border:none;background:none;color:#9CA3AF;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .15s,color .15s}
+.step-remove:hover{background:#FEE2E2;color:#EF4444}
+.step-connector{width:2px;height:24px;background:linear-gradient(to bottom,#14B8A6,#0F766E);margin:0 auto;border-radius:2px;flex-shrink:0}
+
+/* agent palette */
+.agent-palette{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}
+.palette-agent{background:#F9FAFB;border:1.5px solid #E5E7EB;border-radius:10px;padding:10px 12px;cursor:pointer;transition:all .15s;text-align:center}
+.palette-agent:hover{border-color:#14B8A6;background:#F0FDFA}
+.palette-agent .pa-icon{font-size:20px;margin-bottom:4px}
+.palette-agent .pa-name{font-size:11px;font-weight:600;color:#374151}
+
+/* workflow list */
+.wf-list{display:flex;flex-direction:column;gap:12px}
+.wf-item{background:#fff;border:1.5px solid #E5E7EB;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:16px;transition:border-color .15s,box-shadow .15s;cursor:pointer}
+.wf-item:hover{border-color:#14B8A6;box-shadow:0 3px 10px rgba(20,184,166,.1)}
+.wf-item-icon{font-size:26px;flex-shrink:0}
+.wf-item-meta{flex:1;min-width:0}
+.wf-item-name{font-weight:600;font-size:14px;color:#111;margin-bottom:2px}
+.wf-item-desc{font-size:12px;color:#9CA3AF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wf-item-stats{font-size:11px;color:#9CA3AF;margin-top:3px}
+.wf-item-actions{display:flex;gap:6px;flex-shrink:0}
+.wf-action-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid #E5E7EB;background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
+.wf-action-btn:hover{border-color:#14B8A6;background:#F0FDFA}
+.wf-action-btn.danger:hover{border-color:#EF4444;background:#FEF2F2;color:#EF4444}
+
+/* run panel */
+.run-panel{background:#F9FAFB;border:1.5px solid #E5E7EB;border-radius:14px;padding:20px;margin-top:20px}
+.run-step-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #F3F4F6;align-items:flex-start}
+.run-step-row:last-child{border-bottom:none}
+.run-step-icon{font-size:18px;flex-shrink:0;margin-top:2px}
+.run-step-content{flex:1;min-width:0}
+.run-step-label{font-size:12px;font-weight:600;color:#374151;margin-bottom:4px}
+.run-step-text{font-size:12.5px;color:#4B5563;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.run-final{background:linear-gradient(135deg,#F0FDFA,#ECFDF5);border:1.5px solid #99F6E4;border-radius:12px;padding:16px;margin-top:16px}
+.run-final-label{font-size:11px;font-weight:700;color:#0F766E;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.run-final-text{font-size:13px;color:#134E4A;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+
+/* modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-backdrop.open{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:20px;padding:28px;width:520px;max-width:calc(100vw - 40px);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.18);transform:translateY(16px);transition:transform .2s}
+.modal-backdrop.open .modal{transform:none}
+.modal h2{font-size:18px;font-weight:700;margin-bottom:20px;color:#111}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:6px}
+.form-group input,.form-group textarea,.form-group select{width:100%;border:1.5px solid #E5E7EB;border-radius:9px;padding:9px 12px;font-size:13.5px;color:#111;outline:none;transition:border-color .15s;background:#fff;box-sizing:border-box}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:#14B8A6}
+.form-group textarea{resize:vertical;min-height:70px;font-family:inherit}
+
+/* input field with task */
+.run-input-wrap{display:flex;gap:8px;margin-bottom:16px}
+.run-input-wrap input{flex:1;border:1.5px solid #E5E7EB;border-radius:9px;padding:9px 12px;font-size:13px;outline:none;transition:border-color .15s}
+.run-input-wrap input:focus{border-color:#14B8A6}
+
+/* spinner */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{width:18px;height:18px;border:2.5px solid #E5E7EB;border-top-color:#14B8A6;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
+
+/* empty state */
+.empty-state{text-align:center;padding:48px 24px;color:#9CA3AF}
+.empty-state-icon{font-size:40px;margin-bottom:12px;opacity:.5}
+.empty-state p{font-size:14px;margin-bottom:16px}
+
+/* toast */
+.toast{position:fixed;bottom:24px;right:24px;background:#111;color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none}
+.toast.show{opacity:1;transform:none}
+.toast.success{background:#059669}
+.toast.error{background:#DC2626}
+</style>
+</head>
+<body>
+
+<!-- Sidebar (same as other pages) -->
+<div class="sidebar">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gCore" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="60%" stop-color="#14B8A6"/><stop offset="100%" stop-color="#0F766E"/></radialGradient>
+        <linearGradient id="gOrbit1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#14B8A6"/><stop offset="100%" stop-color="#0F766E"/></linearGradient>
+        <linearGradient id="gOrbit2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0F766E"/><stop offset="100%" stop-color="#22C55E"/></linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="1" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+      </defs>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(-35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit2)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.6" transform="rotate(90 18 18)"/>
+      <circle cx="18" cy="2.1" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="18" cy="33.9" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="2.1" cy="18" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="33.9" cy="18" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="5.5" cy="7" r="1.5" fill="#14B8A6" opacity="0.8"/>
+      <circle cx="30.5" cy="29" r="1.5" fill="#22C55E" opacity="0.8"/>
+      <circle cx="18" cy="18" r="4" fill="url(#gCore)" filter="url(#glow)"/>
+      <circle cx="18" cy="18" r="2" fill="white" opacity="0.9"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">THE NEXUS</span>
+      <span class="logo-sub">a GPU-Nexus product</span>
+    </div>
+  </div>
+  <div class="nav-section"><h4>Overview</h4><a href="dashboard.html" class="nav-dashboard"><span class="nav-icon">⬛</span> Dashboard</a></div>
+  <div class="nav-section"><h4>AI Workforce</h4><a href="agents.html" class="nav-agents"><span class="nav-icon">🤖</span> AI Workforce</a><a href="createagents.html" class="nav-createagents"><span class="nav-icon">✦</span> Create Workforce</a></div>
+  <div class="nav-section"><h4>Intelligence</h4><a href="multiagent.html" class="nav-multiagent"><span class="nav-icon">🧬</span> Multi-Agent Engine</a></div>
+  <div class="nav-section"><h4>Automation</h4><a href="workflow.html" class="nav-workflow active"><span class="nav-icon">⚡</span> Workflows</a></div>
+  <div class="nav-section"><h4>Communication</h4><a href="chat.html" class="nav-chat"><span class="nav-icon">💬</span> Chat</a></div>
+  <div class="nav-section"><h4>Build</h4><a href="build.html" class="nav-build"><span class="nav-icon">🧠</span> Describe &amp; Build</a></div>
+  <div class="nav-section"><h4>Account</h4><a href="membership.html" class="nav-membership"><span class="nav-icon">💎</span> Membership</a></div>
+  <div class="sidebar-profile">
+    <a href="profile.html" class="profile-link">
+      <div class="avatar" id="sidebarAvatar">A</div>
+      <div class="profile-info"><div class="profile-name" id="sidebarName">Akash</div><div class="profile-role">View &amp; Edit</div></div>
+      <div class="online-dot"></div>
+    </a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px">
+    <div><h1>⚡ Workflow Studio</h1><p>Design, save and run AI-powered automation pipelines</p></div>
+    <button class="btn" onclick="openCreateModal()">+ New Workflow</button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="wf-tabs">
+    <button class="wf-tab active" onclick="switchTab('my-workflows',this)">My Workflows</button>
+    <button class="wf-tab" onclick="switchTab('builder',this)">Visual Builder</button>
+    <button class="wf-tab" onclick="switchTab('templates',this)">Templates</button>
+  </div>
+
+  <!-- ═══ MY WORKFLOWS TAB ═══ -->
+  <div id="tab-my-workflows">
+    <div id="workflowList" class="wf-list">
+      <div class="empty-state" id="wfEmptyState">
+        <div class="empty-state-icon">⚡</div>
+        <p>No workflows yet. Create one or start from a template.</p>
+        <button class="btn" onclick="openCreateModal()">+ New Workflow</button>
+      </div>
+    </div>
+
+    <!-- Run Results Panel -->
+    <div id="runPanel" class="run-panel" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div style="font-weight:700;font-size:14px;color:#111" id="runPanelTitle">Run Results</div>
+        <button class="btn btn-ghost" style="font-size:12px;padding:6px 12px" onclick="closeRunPanel()">✕ Close</button>
+      </div>
+      <div class="run-input-wrap">
+        <input type="text" id="runInputText" placeholder="Optional: enter a starting prompt or context…">
+        <button class="btn" id="runBtn" onclick="executeCurrentWorkflow()">▶ Run</button>
+      </div>
+      <div id="runSteps"></div>
+    </div>
+  </div>
+
+  <!-- ═══ BUILDER TAB ═══ -->
+  <div id="tab-builder" style="display:none">
+    <div style="display:grid;grid-template-columns:1fr 280px;gap:20px">
+      <!-- Canvas -->
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <input id="builderName" type="text" placeholder="Workflow name…" style="flex:1;border:1.5px solid #E5E7EB;border-radius:9px;padding:8px 12px;font-size:14px;font-weight:600;outline:none;transition:border-color .15s" onfocus="this.style.borderColor='#14B8A6'" onblur="this.style.borderColor='#E5E7EB'">
+          <button class="btn btn-ghost" onclick="clearBuilder()">Clear</button>
+          <button class="btn" onclick="saveBuilderWorkflow()">💾 Save</button>
+        </div>
+        <div class="builder-canvas" id="builderCanvas">
+          <div class="builder-empty" id="builderEmpty">
+            <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="8" y="8" width="32" height="8" rx="4" fill="#14B8A6" opacity=".3"/><rect x="8" y="22" width="32" height="8" rx="4" fill="#14B8A6" opacity=".2"/><rect x="8" y="36" width="32" height="8" rx="4" fill="#14B8A6" opacity=".1"/></svg>
+            <p style="font-size:13px;margin:0">Click an agent below to add it as a step</p>
+          </div>
+          <div id="builderSteps" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:0"></div>
+        </div>
+      </div>
+      <!-- Agent palette -->
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#9CA3AF;letter-spacing:.5px;margin-bottom:10px;text-transform:uppercase">Add Agent Step</div>
+        <div class="agent-palette" id="agentPalette">
+          <div class="palette-agent" onclick="addBuilderStep('research','🔍','Research')"><div class="pa-icon">🔍</div><div class="pa-name">Research</div></div>
+          <div class="palette-agent" onclick="addBuilderStep('coding','💻','Coding')"><div class="pa-icon">💻</div><div class="pa-name">Coding</div></div>
+          <div class="palette-agent" onclick="addBuilderStep('marketing','📈','Marketing')"><div class="pa-icon">📈</div><div class="pa-name">Marketing</div></div>
+          <div class="palette-agent" onclick="addBuilderStep('support','🎧','Support')"><div class="pa-icon">🎧</div><div class="pa-name">Support</div></div>
+          <div class="palette-agent" onclick="addBuilderStep('analytics','📊','Analytics')"><div class="pa-icon">📊</div><div class="pa-name">Analytics</div></div>
+          <div class="palette-agent" onclick="addBuilderStep('writer','✍️','Writer')"><div class="pa-icon">✍️</div><div class="pa-name">Writer</div></div>
+        </div>
+        <div style="margin-top:20px;font-size:12px;font-weight:700;color:#9CA3AF;letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase">Description</div>
+        <textarea id="builderDesc" placeholder="What does this workflow do?" style="width:100%;border:1.5px solid #E5E7EB;border-radius:9px;padding:9px 12px;font-size:13px;resize:vertical;min-height:72px;outline:none;box-sizing:border-box;font-family:inherit;transition:border-color .15s" onfocus="this.style.borderColor='#14B8A6'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TEMPLATES TAB ═══ -->
+  <div id="tab-templates" style="display:none">
+    <div class="grid">
+      <div class="card" style="cursor:pointer" onclick="loadTemplate('lead')">
+        <div style="font-size:28px;margin-bottom:10px">📈</div>
+        <div style="font-weight:700;margin-bottom:4px">Lead Generation</div>
+        <div style="font-size:12px;color:#9CA3AF;margin-bottom:10px">Research → Marketing → Analytics</div>
+        <div style="font-size:11px;color:#14B8A6;font-weight:600">Click to load →</div>
+      </div>
+      <div class="card" style="cursor:pointer" onclick="loadTemplate('software')">
+        <div style="font-size:28px;margin-bottom:10px">💻</div>
+        <div style="font-weight:700;margin-bottom:4px">Software Delivery</div>
+        <div style="font-size:12px;color:#9CA3AF;margin-bottom:10px">Research → Coding → Writer</div>
+        <div style="font-size:11px;color:#14B8A6;font-weight:600">Click to load →</div>
+      </div>
+      <div class="card" style="cursor:pointer" onclick="loadTemplate('content')">
+        <div style="font-size:28px;margin-bottom:10px">✍️</div>
+        <div style="font-weight:700;margin-bottom:4px">Content Pipeline</div>
+        <div style="font-size:12px;color:#9CA3AF;margin-bottom:10px">Research → Writer → Marketing</div>
+        <div style="font-size:11px;color:#14B8A6;font-weight:600">Click to load →</div>
+      </div>
+      <div class="card" style="cursor:pointer" onclick="loadTemplate('support')">
+        <div style="font-size:28px;margin-bottom:10px">🎧</div>
+        <div style="font-weight:700;margin-bottom:4px">Customer Support</div>
+        <div style="font-size:12px;color:#9CA3AF;margin-bottom:10px">Research → Support → Analytics</div>
+        <div style="font-size:11px;color:#14B8A6;font-weight:600">Click to load →</div>
+      </div>
+      <div class="card" style="cursor:pointer" onclick="loadTemplate('analytics')">
+        <div style="font-size:28px;margin-bottom:10px">📊</div>
+        <div style="font-weight:700;margin-bottom:4px">Data & Reporting</div>
+        <div style="font-size:12px;color:#9CA3AF;margin-bottom:10px">Research → Analytics → Writer</div>
+        <div style="font-size:11px;color:#14B8A6;font-weight:600">Click to load →</div>
+      </div>
+      <div class="card" style="cursor:pointer" onclick="loadTemplate('launch')">
+        <div style="font-size:28px;margin-bottom:10px">🚀</div>
+        <div style="font-weight:700;margin-bottom:4px">Product Launch</div>
+        <div style="font-size:12px;color:#9CA3AF;margin-bottom:10px">Research → Coding → Marketing → Writer</div>
+        <div style="font-size:11px;color:#14B8A6;font-weight:600">Click to load →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create/Edit Workflow Modal -->
+<div class="modal-backdrop" id="createModal" onclick="closeModalOnBackdrop(event)">
+  <div class="modal">
+    <h2 id="modalTitle">New Workflow</h2>
+    <div class="form-group"><label>Name</label><input type="text" id="mName" placeholder="e.g. Lead Generation Pipeline"></div>
+    <div class="form-group"><label>Description</label><textarea id="mDesc" placeholder="What does this workflow automate?"></textarea></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px">
+      <button class="btn btn-ghost" onclick="closeCreateModal()">Cancel</button>
+      <button class="btn" id="modalSaveBtn" onclick="saveModal()">Create</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://localhost:8000';
+const token = localStorage.getItem('token');
+const headers = { 'Content-Type':'application/json', 'Authorization':'Bearer '+token };
+
+// Profile
+const storedName = localStorage.getItem('full_name') || 'A';
+document.getElementById('sidebarAvatar').textContent = storedName[0].toUpperCase();
+document.getElementById('sidebarName').textContent = storedName;
+
+// ── State ──────────────────────────────────────────────────────────────────
+let workflows = [];
+let builderSteps = [];
+let currentWorkflowId = null;
+let editMode = false;
+let editWorkflowId = null;
+
+const AGENT_META = {
+  research:  {icon:'🔍', label:'Research Agent'},
+  coding:    {icon:'💻', label:'Coding Agent'},
+  marketing: {icon:'📈', label:'Marketing Agent'},
+  support:   {icon:'🎧', label:'Support Agent'},
+  analytics: {icon:'📊', label:'Analytics Agent'},
+  writer:    {icon:'✍️', label:'Writer Agent'},
+};
+
+const TEMPLATES = {
+  lead:      {name:'Lead Generation',   desc:'Research prospects, craft outreach, measure results.',   steps:[{agent:'research',label:'Prospect Research'},{agent:'marketing',label:'Outreach Copy'},{agent:'analytics',label:'Results Analysis'}]},
+  software:  {name:'Software Delivery', desc:'Research, implement and document a software feature.',   steps:[{agent:'research',label:'Technical Research'},{agent:'coding',label:'Implementation'},{agent:'writer',label:'Documentation'}]},
+  content:   {name:'Content Pipeline',  desc:'Research, write and distribute content.',                steps:[{agent:'research',label:'Topic Research'},{agent:'writer',label:'Draft Content'},{agent:'marketing',label:'Distribution Copy'}]},
+  support:   {name:'Customer Support',  desc:'Triage, resolve and log customer issues.',               steps:[{agent:'research',label:'Issue Research'},{agent:'support',label:'Resolution'},{agent:'analytics',label:'Logging & Metrics'}]},
+  analytics: {name:'Data & Reporting',  desc:'Collect, analyse and report on data.',                  steps:[{agent:'research',label:'Data Collection'},{agent:'analytics',label:'Analysis'},{agent:'writer',label:'Report Writing'}]},
+  launch:    {name:'Product Launch',    desc:'Research, build, market and document a product launch.', steps:[{agent:'research',label:'Market Research'},{agent:'coding',label:'Build'},{agent:'marketing',label:'Launch Campaign'},{agent:'writer',label:'Press Kit'}]},
+};
+
+// ── Toast ──────────────────────────────────────────────────────────────────
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────────────
+function switchTab(tab, btn) {
+  document.querySelectorAll('[id^="tab-"]').forEach(el => el.style.display = 'none');
+  document.getElementById('tab-'+tab).style.display = '';
+  document.querySelectorAll('.wf-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── Load Workflows ─────────────────────────────────────────────────────────
+async function loadWorkflows() {
+  try {
+    const r = await fetch(API+'/workflows', {headers});
+    const data = await r.json();
+    if (!data.success) return;
+    workflows = data.workflows;
+    renderWorkflows();
+  } catch(e) { /* backend may be offline during local dev */ }
+}
+
+function renderWorkflows() {
+  const list = document.getElementById('workflowList');
+  const empty = document.getElementById('wfEmptyState');
+  list.innerHTML = '';
+  if (!workflows.length) {
+    list.appendChild(empty);
+    empty.style.display = '';
+    return;
+  }
+  workflows.forEach(wf => {
+    const steps = wf.steps || [];
+    const stepSummary = steps.map(s => AGENT_META[s.agent]?.label || s.agent).join(' → ') || 'No steps';
+    const statusColor = wf.status === 'Active' ? 'badge-green' : wf.status === 'Running' ? 'badge-teal' : 'badge-orange';
+    const lastRun = wf.last_run ? 'Last run: ' + new Date(wf.last_run).toLocaleString() : 'Never run';
+    const icon = steps[0] ? (AGENT_META[steps[0].agent]?.icon || '⚡') : '⚡';
+    const el = document.createElement('div');
+    el.className = 'wf-item';
+    el.innerHTML = `
+      <div class="wf-item-icon">${icon}</div>
+      <div class="wf-item-meta">
+        <div class="wf-item-name">${escHtml(wf.name)}</div>
+        <div class="wf-item-desc">${escHtml(stepSummary)}</div>
+        <div class="wf-item-stats">${lastRun} &nbsp;•&nbsp; ${wf.run_count || 0} runs</div>
+      </div>
+      <span class="badge ${statusColor}" style="margin-right:8px">${wf.status}</span>
+      <div class="wf-item-actions">
+        <button class="wf-action-btn" title="Run" onclick="event.stopPropagation();openRunPanel(${wf.id})">▶</button>
+        <button class="wf-action-btn" title="Edit" onclick="event.stopPropagation();openEditModal(${wf.id})">✏️</button>
+        <button class="wf-action-btn danger" title="Delete" onclick="event.stopPropagation();deleteWorkflow(${wf.id})">🗑</button>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+// ── Run Panel ──────────────────────────────────────────────────────────────
+function openRunPanel(wfId) {
+  currentWorkflowId = wfId;
+  const wf = workflows.find(w => w.id === wfId);
+  document.getElementById('runPanelTitle').textContent = '▶ Run: ' + (wf?.name || 'Workflow');
+  document.getElementById('runSteps').innerHTML = '';
+  document.getElementById('runInputText').value = '';
+  document.getElementById('runPanel').style.display = '';
+  document.getElementById('runPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function closeRunPanel() {
+  document.getElementById('runPanel').style.display = 'none';
+  currentWorkflowId = null;
+}
+
+async function executeCurrentWorkflow() {
+  if (!currentWorkflowId) return;
+  const btn = document.getElementById('runBtn');
+  const inputText = document.getElementById('runInputText').value.trim();
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Running…';
+  document.getElementById('runSteps').innerHTML = '<div style="color:#9CA3AF;font-size:13px;padding:12px 0">Running workflow steps…</div>';
+  try {
+    const r = await fetch(`${API}/workflows/${currentWorkflowId}/run`, {
+      method:'POST', headers,
+      body: JSON.stringify({input_text: inputText})
+    });
+    const data = await r.json();
+    if (!data.success) { showToast(data.message || 'Run failed', 'error'); return; }
+    renderRunResults(data);
+    // Refresh list
+    loadWorkflows();
+  } catch(e) { showToast('Could not reach backend', 'error'); }
+  finally { btn.disabled = false; btn.innerHTML = '▶ Run'; }
+}
+
+function renderRunResults(data) {
+  const container = document.getElementById('runSteps');
+  container.innerHTML = '';
+  (data.steps || []).forEach(s => {
+    const meta = AGENT_META[s.agent] || {icon:'🤖', label:s.agent};
+    const row = document.createElement('div');
+    row.className = 'run-step-row';
+    row.innerHTML = `
+      <div class="run-step-icon">${meta.icon}</div>
+      <div class="run-step-content">
+        <div class="run-step-label">Step ${s.step}: ${escHtml(s.label)} <span style="color:#9CA3AF;font-weight:400">(${meta.label})</span></div>
+        <div class="run-step-text">${escHtml(s.result)}</div>
+      </div>`;
+    container.appendChild(row);
+  });
+  if (data.final_output) {
+    const fin = document.createElement('div');
+    fin.className = 'run-final';
+    fin.innerHTML = `<div class="run-final-label">✅ Final Output</div><div class="run-final-text">${escHtml(data.final_output)}</div>`;
+    container.appendChild(fin);
+  }
+  showToast('Workflow complete!', 'success');
+}
+
+// ── Delete ─────────────────────────────────────────────────────────────────
+async function deleteWorkflow(wfId) {
+  if (!confirm('Delete this workflow?')) return;
+  await fetch(`${API}/workflows/${wfId}`, {method:'DELETE', headers});
+  showToast('Workflow deleted');
+  loadWorkflows();
+}
+
+// ── Create / Edit Modal ────────────────────────────────────────────────────
+function openCreateModal() {
+  editMode = false; editWorkflowId = null;
+  document.getElementById('mName').value = '';
+  document.getElementById('mDesc').value = '';
+  document.getElementById('modalTitle').textContent = 'New Workflow';
+  document.getElementById('modalSaveBtn').textContent = 'Create';
+  document.getElementById('createModal').classList.add('open');
+}
+function openEditModal(wfId) {
+  const wf = workflows.find(w => w.id === wfId);
+  if (!wf) return;
+  editMode = true; editWorkflowId = wfId;
+  document.getElementById('mName').value = wf.name;
+  document.getElementById('mDesc').value = wf.description || '';
+  document.getElementById('modalTitle').textContent = 'Edit Workflow';
+  document.getElementById('modalSaveBtn').textContent = 'Save';
+  document.getElementById('createModal').classList.add('open');
+}
+function closeCreateModal() { document.getElementById('createModal').classList.remove('open'); }
+function closeModalOnBackdrop(e) { if (e.target === e.currentTarget) closeCreateModal(); }
+
+async function saveModal() {
+  const name = document.getElementById('mName').value.trim();
+  if (!name) { showToast('Enter a workflow name', 'error'); return; }
+  const desc = document.getElementById('mDesc').value.trim();
+  if (editMode) {
+    await fetch(`${API}/workflows/${editWorkflowId}`, {method:'PUT', headers, body:JSON.stringify({name,description:desc})});
+    showToast('Workflow updated', 'success');
+  } else {
+    await fetch(`${API}/workflows`, {method:'POST', headers, body:JSON.stringify({name, description:desc, steps:[]})});
+    showToast('Workflow created', 'success');
+  }
+  closeCreateModal();
+  loadWorkflows();
+}
+
+// ── Visual Builder ─────────────────────────────────────────────────────────
+function clearBuilder() {
+  builderSteps = [];
+  renderBuilderCanvas();
+}
+
+function addBuilderStep(agent, icon, label) {
+  builderSteps.push({agent, icon, label, prompt_template:''});
+  renderBuilderCanvas();
+}
+
+function removeBuilderStep(idx) {
+  builderSteps.splice(idx, 1);
+  renderBuilderCanvas();
+}
+
+function renderBuilderCanvas() {
+  const stepsEl = document.getElementById('builderSteps');
+  const emptyEl = document.getElementById('builderEmpty');
+  stepsEl.innerHTML = '';
+  if (!builderSteps.length) { emptyEl.style.display = ''; return; }
+  emptyEl.style.display = 'none';
+  builderSteps.forEach((s, i) => {
+    if (i > 0) {
+      const conn = document.createElement('div');
+      conn.className = 'step-connector';
+      stepsEl.appendChild(conn);
+    }
+    const card = document.createElement('div');
+    card.className = 'wf-step-card';
+    card.innerHTML = `
+      <div class="step-badge">${i+1}</div>
+      <div class="step-icon">${s.icon}</div>
+      <div class="step-meta">
+        <div class="step-label">${escHtml(s.label)}</div>
+        <div class="step-agent-tag">${escHtml(AGENT_META[s.agent]?.label || s.agent)}</div>
+      </div>
+      <button class="step-remove" onclick="removeBuilderStep(${i})">×</button>`;
+    stepsEl.appendChild(card);
+  });
+}
+
+async function saveBuilderWorkflow() {
+  const name = document.getElementById('builderName').value.trim();
+  if (!name) { showToast('Enter a workflow name first', 'error'); return; }
+  if (!builderSteps.length) { showToast('Add at least one step', 'error'); return; }
+  const desc = document.getElementById('builderDesc').value.trim();
+  const steps = builderSteps.map(s => ({agent:s.agent, label:s.label, prompt_template:s.prompt_template||''}));
+  const r = await fetch(`${API}/workflows`, {method:'POST', headers, body:JSON.stringify({name, description:desc, steps})});
+  const data = await r.json();
+  if (data.success) {
+    showToast('Workflow saved!', 'success');
+    clearBuilder();
+    document.getElementById('builderName').value = '';
+    document.getElementById('builderDesc').value = '';
+    await loadWorkflows();
+    // Switch to My Workflows
+    document.querySelectorAll('.wf-tab')[0].click();
+  } else {
+    showToast(data.message || 'Save failed', 'error');
+  }
+}
+
+// ── Templates ──────────────────────────────────────────────────────────────
+function loadTemplate(key) {
+  const t = TEMPLATES[key];
+  if (!t) return;
+  builderSteps = t.steps.map(s => ({...s, icon: AGENT_META[s.agent]?.icon || '🤖', prompt_template:''}));
+  document.getElementById('builderName').value = t.name;
+  document.getElementById('builderDesc').value = t.desc;
+  renderBuilderCanvas();
+  // Switch to builder tab
+  document.querySelectorAll('.wf-tab')[1].click();
+  showToast('Template loaded — customise and save!');
+}
+
+// ── Util ───────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+if (!token) { location.href = 'login.html'; }
+loadWorkflows();
+</script>
+</body>
+</html>

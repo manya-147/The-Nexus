@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Login — THE NEXUS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700&display=swap');
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Inter',sans-serif;background:#F8F7F4;color:#1A1A1A;display:flex;min-height:100vh}
+.left{flex:1;background:linear-gradient(135deg,#0F766E,#115E59);color:white;padding:60px 56px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.left::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;background:rgba(255,255,255,0.08);border-radius:50%}
+.left::after{content:'';position:absolute;bottom:-60px;left:-60px;width:240px;height:240px;background:rgba(255,255,255,0.05);border-radius:50%}
+.left-logo{display:flex;align-items:center;gap:14px;margin-bottom:60px;position:relative;z-index:1}
+.left-logo svg{width:52px;height:52px}
+.left-logo-name{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:700;color:white;letter-spacing:2px}
+.left-logo-sub{font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.5px}
+.left-hero{position:relative;z-index:1}
+.left-hero h1{font-size:44px;font-weight:700;line-height:1.15;margin-bottom:16px;color:white}
+.left-hero p{font-size:16px;color:rgba(255,255,255,0.75);line-height:1.7;max-width:420px}
+.features{margin-top:44px;display:flex;flex-direction:column;gap:14px;position:relative;z-index:1}
+.feat{display:flex;align-items:center;gap:12px;font-size:14px;color:rgba(255,255,255,0.8)}
+.feat-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.8);flex-shrink:0}
+.pricing-strip{display:flex;gap:10px;margin-top:36px;position:relative;z-index:1;flex-wrap:wrap}
+.price-pill{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);border-radius:12px;padding:10px 16px;text-align:center;flex:1;min-width:90px}
+.price-pill .amt{font-size:15px;font-weight:700;color:#fff}
+.price-pill .per{font-size:10.5px;color:rgba(255,255,255,0.6);letter-spacing:0.3px}
+
+.right{width:480px;background:white;border-left:1px solid #E5E7EB;display:flex;align-items:center;justify-content:center}
+.card{width:380px;padding:8px}
+.tabs{display:flex;gap:6px;margin-bottom:28px}
+.tabs button{padding:9px 22px;border:1px solid #E5E7EB;background:transparent;color:#6B7280;border-radius:10px;font-size:13.5px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Inter',sans-serif}
+.tabs button.active{background:#0F766E;color:white;border-color:#0F766E}
+.form-title{font-size:22px;font-weight:700;margin-bottom:6px}
+.form-sub{font-size:13px;color:#9CA3AF;margin-bottom:24px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:500;color:#4B5563;margin-bottom:5px}
+.field input{width:100%;padding:12px 14px;background:#F8F7F4;border:1px solid #E5E7EB;border-radius:10px;color:#1A1A1A;font-size:13.5px;font-family:'Inter',sans-serif;outline:none;transition:border-color 0.2s}
+.field input:focus{border-color:#0F766E;box-shadow:0 0 0 3px rgba(15,118,110,0.1)}
+.remember{display:flex;align-items:center;gap:8px;font-size:13px;color:#4B5563;margin-bottom:18px}
+.remember input{width:16px;height:16px;accent-color:#0F766E}
+.btn{width:100%;padding:13px;background:#0F766E;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;letter-spacing:0.3px;transition:all 0.2s}
+.btn:hover{background:#0D6B64;box-shadow:0 6px 16px rgba(15,118,110,0.3)}
+.form-section{display:none}.form-section.show{display:block}
+.floating{position:fixed;font-size:28px;opacity:0.06;animation:float 7s ease-in-out infinite;pointer-events:none}
+.f1{left:7%;top:12%;animation-delay:0s}.f2{left:18%;top:72%;animation-delay:1.5s}
+.f3{left:30%;top:20%;animation-delay:3s}.f4{left:38%;top:78%;animation-delay:4.5s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-22px) rotate(8deg);}}
+</style>
+</head>
+<body>
+<div class="left">
+  <div class="left-logo">
+    <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gCL" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff"/><stop offset="60%" stop-color="#14B8A6"/><stop offset="100%" stop-color="#0F766E"/></radialGradient>
+        <linearGradient id="gOL1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="rgba(255,255,255,0.9)"/><stop offset="100%" stop-color="rgba(255,255,255,0.5)"/></linearGradient>
+        <linearGradient id="gOL2" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="rgba(255,255,255,0.6)"/><stop offset="100%" stop-color="rgba(255,255,255,0.9)"/></linearGradient>
+        <filter id="glowL"><feGaussianBlur stdDeviation="1.5" result="b"/><feComposite in="SourceGraphic" in2="b" operator="over"/></filter>
+      </defs>
+      <ellipse cx="26" cy="26" rx="23" ry="8.5" stroke="url(#gOL1)" stroke-width="1.5" fill="none" opacity="0.9" transform="rotate(-35 26 26)"/>
+      <ellipse cx="26" cy="26" rx="23" ry="8.5" stroke="url(#gOL2)" stroke-width="1.5" fill="none" opacity="0.9" transform="rotate(35 26 26)"/>
+      <ellipse cx="26" cy="26" rx="23" ry="8.5" stroke="url(#gOL1)" stroke-width="1.5" fill="none" opacity="0.6" transform="rotate(90 26 26)"/>
+      <circle cx="26" cy="3.5" r="2.5" fill="white" filter="url(#glowL)" opacity="0.9"/>
+      <circle cx="26" cy="48.5" r="2.5" fill="white" filter="url(#glowL)" opacity="0.9"/>
+      <circle cx="3.5" cy="26" r="2.5" fill="white" filter="url(#glowL)" opacity="0.9"/>
+      <circle cx="48.5" cy="26" r="2.5" fill="white" filter="url(#glowL)" opacity="0.9"/>
+      <circle cx="8" cy="11" r="1.8" fill="white" opacity="0.7"/>
+      <circle cx="44" cy="41" r="1.8" fill="white" opacity="0.7"/>
+      <circle cx="26" cy="26" r="6" fill="url(#gCL)" filter="url(#glowL)"/>
+      <circle cx="26" cy="26" r="3" fill="white" opacity="0.95"/>
+    </svg>
+    <div>
+      <div class="left-logo-name">THE NEXUS</div>
+      <div class="left-logo-sub">a GPU-Nexus product</div>
+    </div>
+  </div>
+  <div class="left-hero">
+    <h1>Build Your<br>AI Workforce</h1>
+    <p>Create intelligent AI teams that research, code, market, support, and automate work together.</p>
+    <div class="features">
+      <div class="feat"><div class="feat-dot"></div>Deploy agents with custom roles &amp; personalities</div>
+      <div class="feat"><div class="feat-dot"></div>Design automated multi-agent workflows</div>
+      <div class="feat"><div class="feat-dot"></div>Chat with your AI team in real time</div>
+      <div class="feat"><div class="feat-dot"></div>100% local — your data stays private</div>
+    </div>
+    <div class="pricing-strip">
+      <div class="price-pill"><div class="amt">₹50</div><div class="per">per week</div></div>
+      <div class="price-pill"><div class="amt">₹150</div><div class="per">per month</div></div>
+      <div class="price-pill"><div class="amt">₹1500</div><div class="per">per year</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="right">
+  <div class="card">
+    <div class="tabs">
+      <button id="lbtn" class="active" onclick="show('login')">Sign In</button>
+      <button id="sbtn" onclick="show('signup')">Sign Up</button>
+    </div>
+   <div id="login" class="form-section show">
+    <div class="form-title">Welcome back</div>
+    <div class="form-sub">Sign in to your Nexus account</div>
+
+    <div class="field">
+        <label>Email</label>
+        <input id="loginEmail" type="email" placeholder="you@example.com">
+    </div>
+
+    <div class="field">
+        <label>Password</label>
+        <input id="loginPassword" type="password" placeholder="••••••••">
+    </div>
+
+    <div class="remember">
+        <input id="rem" type="checkbox">
+        <label for="rem">Keep me signed in</label>
+    </div>
+
+    <button class="btn" onclick="login()">Sign In →</button>
+</div>
+    <div id="signup" class="form-section">
+      <div class="form-title">Create account</div>
+      <div class="form-sub">Start building your AI team today</div>
+      <div class="field">
+  <label>Full Name</label>
+  <input id="signupName" placeholder="Your name">
+</div>
+
+      <div class="field">
+        <label>Email</label>
+        <input id="signupEmail" type="email" placeholder="you@example.com">
+      </div>
+
+      <div class="field">
+        <label>Phone</label>
+        <input id="signupPhone" type="tel" placeholder="+91 00000 00000">
+      </div>
+
+      <div class="field">
+        <label>Date of Birth</label>
+        <input id="signupDob" type="date">
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input id="signupPassword" type="password" placeholder="••••••••">
+      </div>
+
+      <div class="field">
+        <label>Confirm Password</label>
+        <input id="signupConfirmPassword" type="password" placeholder="••••••••">
+      </div>
+      <button class="btn" onclick="signup()">
+          Create Account →
+        </button>
+    </div>
+  </div>
+</div>
+
+<div class="floating f1">⬡</div>
+<div class="floating f2">⚡</div>
+<div class="floating f3">◈</div>
+<div class="floating f4">⬢</div>
+
+<script>
+function show(id){
+    document.querySelectorAll('.form-section')
+    .forEach(x=>x.classList.remove('show'));
+
+    document.getElementById(id)
+    .classList.add('show');
+
+    document.getElementById('lbtn')
+    .classList.toggle('active',id==='login');
+
+    document.getElementById('sbtn')
+    .classList.toggle('active',id==='signup');
+}
+
+async function login(){
+
+    const email =
+        document.getElementById("loginEmail").value;
+
+    const password =
+        document.getElementById("loginPassword").value;
+
+    try{
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/login",
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    email:email,
+                    password:password
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if(data.success){
+
+            localStorage.setItem(
+                "token",
+                data.token
+            );
+
+            localStorage.setItem(
+                "user_id",
+                data.user_id
+            );
+
+            localStorage.setItem(
+                "full_name",
+                data.full_name
+            );
+
+            localStorage.setItem(
+                "email",
+                data.email
+            );
+
+            alert("Login Successful");
+
+            window.location.href =
+                "dashboard.html";
+
+        }else{
+
+            alert(data.message);
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        alert("Cannot connect to backend");
+    }
+}
+async function signup() {
+
+    const full_name = document.getElementById("signupName").value;
+    const email = document.getElementById("signupEmail").value;
+    const phone = document.getElementById("signupPhone").value;
+    const dob = document.getElementById("signupDob").value;
+    const password = document.getElementById("signupPassword").value;
+    const confirmPassword = document.getElementById("signupConfirmPassword").value;
+
+    if(password !== confirmPassword){
+        alert("Passwords do not match");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://127.0.0.1:8000/signup",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    full_name,
+                    email,
+                    phone,
+                    dob,
+                    password
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if(data.success){
+
+            alert("Account created successfully");
+
+            show('login');
+
+            document.querySelector(
+                '#login input[type="email"]'
+            ).value = email;
+
+        } else {
+
+            alert(data.message);
+
+        }
+
+    } catch(error){
+
+        console.error(error);
+        alert("Cannot connect to backend");
+
+    }
+}
+</script>
+</body>
+</html>

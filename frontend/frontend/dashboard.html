@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — THE NEXUS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="css/style.css">
+<style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700&display=swap');</style>
+<script src="js/membership.js"></script>
+</head>
+<body>
+<div class="sidebar">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="gCore" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#14B8A6"/>
+          <stop offset="100%" stop-color="#0F766E"/>
+        </radialGradient>
+        <linearGradient id="gOrbit1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#14B8A6"/>
+          <stop offset="100%" stop-color="#0F766E"/>
+        </linearGradient>
+        <linearGradient id="gOrbit2" x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#0F766E"/>
+          <stop offset="100%" stop-color="#22C55E"/>
+        </linearGradient>
+        <filter id="glow"><feGaussianBlur stdDeviation="1" result="blur"/><feComposite in="SourceGraphic" in2="blur" operator="over"/></filter>
+      </defs>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(-35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit2)" stroke-width="1.2" fill="none" opacity="0.9" transform="rotate(35 18 18)"/>
+      <ellipse cx="18" cy="18" rx="16" ry="6" stroke="url(#gOrbit1)" stroke-width="1.2" fill="none" opacity="0.6" transform="rotate(90 18 18)"/>
+      <circle cx="18" cy="2.1" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="18" cy="33.9" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="2.1" cy="18" r="2" fill="#0F766E" filter="url(#glow)"/>
+      <circle cx="33.9" cy="18" r="2" fill="#14B8A6" filter="url(#glow)"/>
+      <circle cx="5.5" cy="7" r="1.5" fill="#14B8A6" opacity="0.8"/>
+      <circle cx="30.5" cy="29" r="1.5" fill="#22C55E" opacity="0.8"/>
+      <circle cx="18" cy="18" r="4" fill="url(#gCore)" filter="url(#glow)"/>
+      <circle cx="18" cy="18" r="2" fill="white" opacity="0.9"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">THE NEXUS</span>
+      <span class="logo-sub">a GPU-Nexus product</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <h4>Overview</h4>
+    <a href="dashboard.html" class="nav-dashboard active"><span class="nav-icon">⬛</span> Dashboard</a>
+  </div>
+  <div class="nav-section">
+    <h4>AI Workforce</h4>
+    <a href="agents.html" class="nav-agents"><span class="nav-icon">🤖</span> AI Workforce</a>
+    <a href="createagents.html" class="nav-createagents"><span class="nav-icon">✦</span> Create Workforce</a>
+  </div>
+  <div class="nav-section">
+    <h4>Intelligence</h4>
+    <a href="multiagent.html" class="nav-multiagent"><span class="nav-icon">🧬</span> Multi-Agent Engine</a>
+  </div>
+    <div class="nav-section">
+    <h4>Automation</h4>
+    <a href="workflow.html" class="nav-workflow"><span class="nav-icon">⚡</span> Workflows</a>
+  </div>
+  <div class="nav-section">
+    <h4>Communication</h4>
+    <a href="chat.html" class="nav-chat"><span class="nav-icon">💬</span> Chat</a>
+  </div>
+
+  <div class="nav-section">
+    <h4>Build</h4>
+    <a href="build.html" class="nav-build"><span class="nav-icon">🧠</span> Describe &amp; Build</a>
+  </div>
+
+  <div class="nav-section">
+    <h4>Account</h4>
+    <a href="membership.html" class="nav-membership"><span class="nav-icon">💎</span> Membership</a>
+  </div>
+
+  <div class="sidebar-profile">
+    <a href="profile.html" class="profile-link">
+      <div class="avatar">A</div>
+      <div class="profile-info">
+        <div class="profile-name" id="profileName">User</div>
+        <div class="profile-role">View &amp; Edit</div>
+      </div>
+      <div class="online-dot"></div>
+      <button onclick="logout()" class="btn">
+        Logout
+      </button>
+    </a>
+  </div>
+</div>
+<div class="main">
+  <div class="hero-banner">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px">
+      <div>
+        <h1 id="welcomeText">Build Your AI Workforce</h1>
+        <p style="margin-bottom:6px;font-weight:500;color:#4B5563">THE NEXUS — A GPU-Nexus Product</p>
+        <p>Create intelligent AI teams that research, code, market, support, and automate work together.</p>
+      </div>
+      <a href="createagents.html" class="btn">+ New Workforce</a>
+    </div>
+  </div>
+
+  <div class="membership-status-card">
+    <div class="membership-status-left">
+      <div class="membership-status-icon">💎</div>
+      <div>
+        <div class="membership-status-title">Membership Status</div>
+        <div class="membership-status-plan" id="dash-plan-name">Loading…</div>
+      </div>
+    </div>
+    <div class="membership-status-right">
+      <div class="membership-status-stat">
+        <div class="v" id="dash-price">₹0</div>
+        <div class="l">Current Plan</div>
+      </div>
+      <div class="membership-status-stat">
+        <div class="v"><span id="dash-days">0</span> Days</div>
+        <div class="l">Remaining</div>
+      </div>
+      <span class="badge badge-teal" id="dash-badge">Free</span>
+      <a href="membership.html" class="btn btn-ghost">Manage</a>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card"><div class="metric-icon">🤖</div><div class="metric-value">24</div><div class="metric-label">Active Agents</div></div>
+    <div class="metric-card"><div class="metric-icon">⚡</div><div class="metric-value">1,284</div><div class="metric-label">Tasks Automated</div></div>
+    <div class="metric-card"><div class="metric-icon">🕐</div><div class="metric-value">92h</div><div class="metric-label">Hours Saved</div></div>
+    <div class="metric-card"><div class="metric-icon">✅</div><div class="metric-value">98%</div><div class="metric-label">Success Rate</div></div>
+  </div>
+
+  <h3 style="font-size:13px;font-weight:600;color:#9CA3AF;letter-spacing:0.5px;margin:28px 0 14px">AI WORKFORCE TEMPLATES</h3>
+  <div class="grid" style="margin-bottom:28px">
+    <div class="template-card" onclick="location.href='createagents.html'"><div class="t-icon">🚀</div><div class="t-name">Software Startup Team</div><div class="t-desc">CEO, Architect, Devs &amp; QA</div></div>
+    <div class="template-card" onclick="location.href='createagents.html'"><div class="t-icon">📚</div><div class="t-name">Student Team</div><div class="t-desc">Research &amp; study support</div></div>
+    <div class="template-card" onclick="location.href='createagents.html'"><div class="t-icon">📈</div><div class="t-name">Marketing Team</div><div class="t-desc">Campaigns &amp; outreach</div></div>
+    <div class="template-card" onclick="location.href='createagents.html'"><div class="t-icon">🔬</div><div class="t-name">Research Team</div><div class="t-desc">Deep research &amp; analysis</div></div>
+    <div class="template-card" onclick="location.href='createagents.html'"><div class="t-icon">💼</div><div class="t-name">Business Team</div><div class="t-desc">Strategy &amp; operations</div></div>
+    <div class="template-card" onclick="location.href='createagents.html'"><div class="t-icon">🎧</div><div class="t-name">Customer Support Team</div><div class="t-desc">Triage &amp; resolution</div></div>
+  </div>
+
+  <h3 style="font-size:13px;font-weight:600;color:#9CA3AF;letter-spacing:0.5px;margin-bottom:14px">SEARCH AI TEAMS</h3>
+  <div class="section-card" style="margin-bottom:28px">
+    <input class="search" id="teamSearch" style="width:100%;margin-bottom:4px" placeholder="Search AI Teams…" oninput="searchTeams()">
+    <div id="teamResult"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="section-card">
+      <h3>Recent Activity</h3>
+      <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">Research Agent completed market analysis report</div><div class="activity-time">2 minutes ago</div></div></div>
+      <div class="activity-item"><div class="activity-dot" style="background:#7C3AED"></div><div><div class="activity-text">New Workflow "Lead Pipeline" started running</div><div class="activity-time">18 minutes ago</div></div></div>
+      <div class="activity-item"><div class="activity-dot" style="background:#22C55E"></div><div><div class="activity-text">Coding Agent fixed 3 bugs in auth module</div><div class="activity-time">1 hour ago</div></div></div>
+      <div class="activity-item"><div class="activity-dot" style="background:#F59E0B"></div><div><div class="activity-text">Marketing Agent generated 23 outreach emails</div><div class="activity-time">3 hours ago</div></div></div>
+    </div>
+    <div class="section-card">
+      <h3>Quick Actions</h3>
+      <a class="qa-row" href="build.html">🧠 Describe &amp; Build</a>
+      <a class="qa-row" href="createagents.html">✦ Create Workforce</a>
+      <a class="qa-row" href="chat.html">💬 Start Chat</a>
+      <a class="qa-row" href="workflow.html">⚡ New Workflow</a>
+      <a class="qa-row" href="agents.html">🤖 View AI Workforce</a>
+    </div>
+  </div>
+</div>
+<script>
+// ── auth guard ────────────────────────────────────────────────────
+const token = localStorage.getItem("token");
+if(!token) window.location.href = "login.html";
+
+// ── sidebar name + welcome ────────────────────────────────────────
+const fullName = localStorage.getItem("full_name") || "User";
+document.getElementById("profileName").innerText  = fullName;
+document.getElementById("welcomeText").innerText  = `Welcome, ${fullName}`;
+
+// ── logout ─────────────────────────────────────────────────────────
+function logout(){
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+
+// ── load profile from backend & render membership card ────────────
+async function loadDashboard(){
+    const data = await fetchProfile();
+
+    // Update sidebar name in case it changed
+    if(data && data.full_name){
+        document.getElementById("profileName").innerText = data.full_name;
+        document.getElementById("welcomeText").innerText = `Welcome, ${data.full_name}`;
+    }
+
+    renderMembershipStatus(data, {
+        planName: "dash-plan-name",
+        price:    "dash-price",
+        days:     "dash-days",
+        badge:    "dash-badge"
+    });
+}
+
+// ── live-update when payment completes (same or other tab) ────────
+listenForPlanUpdates(function(updated){
+    renderMembershipStatus(updated, {
+        planName: "dash-plan-name",
+        price:    "dash-price",
+        days:     "dash-days",
+        badge:    "dash-badge"
+    });
+});
+
+loadDashboard();
+
+// ── team search ───────────────────────────────────────────────────
+const teamData = {
+  "software startup team": {
+    members: ["CEO Agent","Research Agent","System Architect","Backend Developer","Frontend Developer","QA Tester","Documentation Agent"],
+    models: ["DeepSeek R1","Qwen Coder","Llama 3","Mistral"]
+  },
+  "student team": {
+    members: ["Research Agent","Notes Agent","Tutor Agent","Documentation Agent"],
+    models: ["Llama 3","Mistral"]
+  },
+  "marketing team": {
+    members: ["Strategy Agent","Copywriter Agent","SEO Agent","Outreach Agent"],
+    models: ["Qwen Coder","Llama 3"]
+  },
+  "research team": {
+    members: ["Lead Research Agent","Data Analyst Agent","Summarizer Agent"],
+    models: ["DeepSeek R1","Mistral"]
+  },
+  "business team": {
+    members: ["Strategy Agent","Operations Agent","Finance Agent"],
+    models: ["Llama 3","Mistral"]
+  },
+  "customer support team": {
+    members: ["Triage Agent","Support Agent","Escalation Agent"],
+    models: ["Qwen Coder","Llama 3"]
+  }
+};
+function searchTeams(){
+  const q = document.getElementById('teamSearch').value.trim().toLowerCase();
+  const box = document.getElementById('teamResult');
+  if(!q){ box.innerHTML=''; return; }
+  const match = Object.keys(teamData).find(k => k.includes(q));
+  if(!match){ box.innerHTML = '<p style="font-size:13px;color:#9CA3AF;margin-top:12px">No matching AI team found.</p>'; return; }
+  const team = teamData[match];
+  const title = match.replace(/\b\w/g, c => c.toUpperCase());
+  box.innerHTML = `
+    <div class="divider"></div>
+    <div style="font-weight:600;font-size:14px;margin-bottom:10px">${title}</div>
+    <div style="font-size:12px;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Included Members</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">${team.members.map(m=>`<span class="badge badge-teal">${m}</span>`).join('')}</div>
+    <div style="font-size:12px;color:#9CA3AF;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px">Recommended Models</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">${team.models.map(m=>`<span class="badge badge-purple">${m}</span>`).join('')}</div>
+  `;
+}
+</script>
+</body>
+</html>
